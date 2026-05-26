@@ -1,0 +1,122 @@
+[
+    {
+        "abbreviation": "EI",
+        "name": "Computer Engineering",
+        "name_pt": "Engenharia Informática",
+        "type": "Degree",
+        "semesters": 6,
+        "ECTS": 180,
+        "places": 150,
+        "contact": "coord.ei.estg@ipleiria.pt",
+        "objectives": "The degree in Computer Engineering aims to train professionals with skills in the areas of Information Systems and Information and Communication Technologies. The degree prepares students for software development, network and service planning and configuration, security, mobile computing, administration and intelligent data analysis, among other skills. During the course, students also have the opportunity to implement real case projects with internal and external entities. Graduates in Computer Engineering are highly employable and sought after by top companies.",
+        "objectives_pt": "A licenciatura em Engenharia Informática tem por objetivo formar profissionais com competências nas áreas dos Sistemas de Informação e das Tecnologias de Informação e Comunicação. A licenciatura prepara os estudantes para o desenvolvimento de software, planeamento e configuração de redes e serviços, segurança, computação móvel, administração e análise inteligente de dados, entre outras valências. Durante o curso, os estudantes têm ainda oportunidade de implementar projetos de casos reais com entidades internas e externas. Os licenciados em Engenharia Informática têm elevada empregabilidade, sendo procurados por empresas de topo."
+    },
+    {
+        "abbreviation": "JDM",
+        "name": "Digital Games and Multimedia",
+        "name_pt": "Jogos Digitais e Multimédia",
+        "type": "Degree",
+        "semesters": 6,
+        "ECTS": 180,
+        "places": 50,
+        "contact": "coord.jdm.estg@ipleiria.pt",
+        "objectives": "To train professionals in the fields of video games and multimedia production. Graduates will have the necessary skills to work in the various stages of building a digital game (design, programming, artistic creation, quality assurance), as well as in other types of multimedia production (interactive software, web applications, mobile applications, etc.).",
+        "objectives_pt": "Formar profissionais para as áreas dos videojogos e da produção multimédia. Os licenciados terão as competências necessárias para trabalhar nas diversas fases de construção de um jogo digital (conceção, programação, criação artística, quality assurance), assim como em outros tipos de produção multimédia (software interativo, aplicações web, aplicações móveis, etc.)."
+    },
+    {
+        "abbreviation": "MEI-CM",
+        "name": "Computer Engineering - Mobile Computing",
+        "name_pt": "Engenharia Informática-Computação Móvel",
+        "type": "Master",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 40,
+        "contact": "coord.mei-cm.estg@ipleiria.pt",
+        "objectives": "The Master's Degree in Computer Engineering - Mobile Computing aims to develop specialized training in the area of mobile computing and associated technologies, allowing the pursuit of studies by holders of degrees in Computer Engineering or related courses and the possibility of specialization for professionals in the job market. The course is based on project-based teaching in order to provide graduates with the ability to work in teams, plan and organize work, research and acquire the necessary knowledge, as well as develop autonomy, initiative, critical analysis and evaluation of solutions.",
+        "objectives_pt": "O Mestrado em Engenharia Informática – Computação Móvel tem como objetivo desenvolver uma formação especializada na área da computação móvel e tecnologias associadas, permitindo a prossecução de estudos a titulares de licenciaturas em Engenharia Informática ou cursos relacionados e a possibilidade de especialização para os profissionais do mercado de trabalho. O curso assenta no ensino baseado em projetos com vista a dotar os diplomados de capacidade de trabalho em equipa, planeamento e organização do trabalho, pesquisa e aquisição do conhecimento necessário, bem como o desenvolvimento da autonomia, iniciativa, análise crítica e avaliação de soluções."
+    },
+    {
+        "abbreviation": "MCIF",
+        "name": "Cybersecurity and Computer Forensics",
+        "name_pt": "Cibersegurança e Informática Forense",
+        "type": "Master",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 20,
+        "contact": "coord.mcif.estg@ipleiria.pt",
+        "objectives": "The Master's Degree in Cybersecurity and Computer Forensics aims to develop specialized training in the areas of cybersecurity and computer forensics, allowing holders of degrees in Computer Engineering or related courses to continue their studies and training highly qualified technicians in the areas of cybersecurity and computer forensics. This master's degree also aims to develop links with the region's business community through internships, projects and dissertations that can enable the application of best practices in the area of cybersecurity. The main objectives of this master's degree are also to develop applied research in the areas of cybersecurity and computer forensics, as well as to promote the transfer of advanced knowledge in the areas of cybersecurity and computer forensics to organizations.",
+        "objectives_pt": "O Mestrado em Cibersegurança e Informática Forense tem como objetivo desenvolver uma formação especializada nas áreas da cibersegurança e da computação forense, permitindo a prossecução de estudos a titulares de licenciaturas em Engenharia Informática ou cursos relacionados e formando técnicos altamente qualificados nas área da cibersegurança e da informática forense. Este mestrado tem ainda como objetivo desenvolver a ligação com o tecido empresarial da região através da realização de estágios, projetos e dissertações, que possam permitir a aplicação de boas práticas na área da cibersegurança. Constituem ainda objetivos primordiais deste mestrado o desenvolvimento da investigação aplicada nas áreas da cibersegurança e computação forense, assim como a promoção da transferência de conhecimento avançado nas áreas de cibersegurança e computação forense para as organizações."
+    },
+    {
+        "abbreviation": "MCD",
+        "name": "Data Science",
+        "name_pt": "Ciência de Dados",
+        "type": "Master",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 50,
+        "contact": "coord.mcd.estg@ipleiria.pt",
+        "objectives": "The master's degree course in Data Science is a response to the growing need, felt by the region's business community, for a highly qualified workforce in Data Science, with skills in the latest technologies and analytical techniques for acquiring, processing and analyzing large volumes of data. The aim is for the course to be multidisciplinary and to foster a set of synergies between information systems, computer science and statistics, covering applications in various areas of knowledge, such as Management, Engineering, Health, Business Sciences, among others.",
+        "objectives_pt": "O curso de mestrado em Ciência de Dados surge em resposta à crescente necessidade, sentida pelo tecido empresarial da região, de mão de obra altamente qualificada em Ciência de Dados, com competências nas mais recentes tecnologias e técnicas analíticas de aquisição, processamento e análise de grandes volumes de dados. Pretende-se que o curso seja multidisciplinar e potencie um conjunto de sinergias entre sistemas de informação, ciência da computação e estatística, abrangendo aplicações em diversas áreas do conhecimento, tais como Gestão, Engenharia, Saúde, Ciências Empresariais, entre outras."
+    },
+    {
+        "abbreviation": "TESP-DWM",
+        "name": "Web and Multimedia Development",
+        "name_pt": "Desenvolvimento Web e Multimédia",
+        "type": "TESP",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 52,
+        "contact": "coord.dwm.tesp.estg@ipleiria.pt",
+        "objectives": "The Higher Professional Technical course in Web and Multimedia Development aims to train professionals who are able to design and implement web applications and services with multimedia content, autonomously or in teams, using new technologies and tools.",
+        "objectives_pt": "O curso Técnico Superior Profissional em Desenvolvimento Web e Multimédia visa formar profissionais aptos para conceber e implementar aplicações e serviços Web com conteúdos multimédia, autonomamente ou em equipa, recorrendo às novas tecnologias e ferramentas."
+    },
+    {
+        "abbreviation": "TESP-PSI",
+        "name": "Information System Programming",
+        "name_pt": "Programação de Sistemas de Informação",
+        "type": "TESP",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 71,
+        "contact": "coord.psi.tesp.estg@ipleiria.pt",
+        "objectives": "The Higher Professional Technical course in Information Systems Programming aims to train professionals who are able to program and integrate heterogeneous systems, applications and services, using modern software development technologies, tools and methodologies.",
+        "objectives_pt": "O curso Técnico Superior Profissional em Programação de Sistemas de Informação visa formar profissionais aptos a programar e integrar sistemas, aplicações e serviços de base heterogénea, recorrendo a tecnologias, ferramentas e metodologias de desenvolvimento de software modernas."
+    },
+    {
+        "abbreviation": "TESP-RSI",
+        "name": "Computer Networks and Systems",
+        "name_pt": "Redes e Sistemas Informáticos",
+        "type": "TESP",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 10,
+        "contact": "coord.rsi.tesp.estg@ipleiria.pt",
+        "objectives": "The Higher Professional Technical course in Computer Networks and Systems course aims to train professionals who are able to carry out tasks involving the planning, installation, configuration, management and maintenance of computer networks and systems, guaranteeing the optimization of their operation and implementing appropriate security mechanisms.",
+        "objectives_pt": "O curso Técnico Superior Profissional em Redes e Sistemas Informáticos visa formar profissionais aptos para realizar tarefas de planeamento, instalação, configuração, gestão e manutenção de redes e sistemas informáticos, garantindo a otimização do seu funcionamento e procedendo à implementação de mecanismos de segurança adequados."
+    },
+    {
+        "abbreviation": "TESP-CRI",
+        "name": "Cybersecurity and Computer Networks",
+        "name_pt": "Cibersegurança e Redes Informáticas",
+        "type": "TESP",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 72,
+        "contact": "coord.cri.tesp.estg@ipleiria.pt",
+        "objectives": "The Higher Professional Technical course in Cybersecurity and Computer Networks course aims to train professionals with specific skills to carry out tasks of planning, installing, configuring, managing and maintaining computer networks and systems, ensuring that they function optimally and implementing appropriate security mechanisms, applying various methodologies to identify and mitigate cybersecurity vulnerabilities and threats.",
+        "objectives_pt": "O curso Técnico Superior Profissional de Cibersegurança e Redes Informáticas visa formar profissionais com competências específicas para a realização de tarefas de planeamento, instalação, configuração, gestão e manutenção de redes e sistemas informáticos, garantindo a otimização do seu funcionamento e procedendo à implementação de mecanismos de segurança adequados, aplicando diversas metodologias que permitam a identificação e mitigação de vulnerabilidades e ameaças à Cibersegurança."
+    },
+    {
+        "abbreviation": "TESP-TI",
+        "name": "IT Technologies",
+        "name_pt": "Tecnologias Informáticas",
+        "type": "TESP",
+        "semesters": 4,
+        "ECTS": 120,
+        "places": 10,
+        "contact": "coord.ti.tesp.estg@ipleiria.pt",
+        "objectives": "The Higher Professional Technical course in Computer Technologies course aims to train professionals who, autonomously or as part of a team, have the ability to design, model, implement and maintain information systems to support organizations, based on emerging computer technologies and those existing on the market, in order to optimize organizations' business processes. The professional with this training should have a high level of specialization in digital technologies and applications, namely SAP, OutSystems, Navision, Java, RPA (Robotic Process Automation), among others, enabling the creation of greater added value in organizations and the economy. The academic curriculum of the course will be very practical, allowing students to work in a real environment, which means carrying out activities and joining teams on small projects. Their time will be divided between teaching activities and practical work in a real environment.",
+        "objectives_pt": "O curso Técnico Superior Profissional em Tecnologias Informáticas visa formar profissionais que, de forma autónoma ou em equipa, tenham a capacidade para conceber, modelar, implementar e manter sistemas de informação de suporte às organizações, tendo como base as tecnologias informáticas emergentes e as existentes no mercado, de modo a permitir a otimização dos processos de negócio das organizações. O profissional com esta formação deverá ter um nível elevado de especialização em tecnologias digitais e aplicações, nomeadamente SAP, OutSystems, Navision, Java, RPA (Robotic Process Automation), entre outras, permitindo a criação de maior valor acrescentado nas organizações e na economia. O currículo académico do curso será muito prático, permitindo aos estudantes trabalhar em ambiente real, o que significa, executar atividades e integrar equipas de pequenos projetos. O seu tempo será dividido entre as atividades letivas e a vertente prática, em ambiente real."
+    }
+]

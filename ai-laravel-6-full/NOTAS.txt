@@ -1,0 +1,212 @@
+Models:
+
+User
+	SoftDeletes
+	fillable=name,email,password,user_type,gender,blocked,photo_url,custom
+	Relashionships:
+		customer: HasOne withTrasher --chaveestrangeira
+Customer
+	SoftDeletes
+	incrementing = false
+	timestamps=false
+	fillable=id, nif, address, default_payment_type, default_payment_ref, custom
+	Relashionships:
+		customer: HasOne withTrasher --chaveestrangeira
+		orders: HasMany 
+		tshirtsimages: HasMany
+
+Order
+	fillable= staturs,customer_id, date, total_price, notes, reason_for_cancelation, nif, address, payment_type, payment_ref,receipt_url,custom
+	Relashionships:
+		customer: BelongTo withTrashed
+		items: HasMany
+	
+Category
+	SoftDeletes
+	timestamps=false
+	fillable= name, image_url,custom
+	Relashionships:
+		tshirtsimages: HasMany
+
+Tshirt_image
+	SoftDeletes
+	fillable=customer_id, category_id, name,description, image_url, custom
+	Relashionships:
+		customer: BelongTo withTrashed
+		category: BelongTo withTrashed
+
+Price
+	timestamps=false
+	fillable = unit_price_catalog, unit_price_own, unit_price_catalog_discount, unit_price_own_discount, qty_discount, custom
+
+Order_item
+	timestamps=false
+	fillable= order_id,thsirt_image, color_code, size,qty. unit_price, sub_total, custom
+	Relationships:
+		order: BelongTo
+		tshirtImages: BelongTo withTrshed
+		color: Belongto withTrashed --- chave estrangeira: color_code ---> code
+
+Color:
+	SoftDeletes
+	primaryKey = code
+	incrementing = false
+	keyType = string
+	timestamps=false
+	fillable= code, name, custom
+	Relationships:
+		orderItems: HasMany
+
+
+/*Se tabela tiver campo deleted_at: use SoftDeletes;
+
+Se tabela nao tiver nome no plural: protected $table = 'nome_da_tabela'
+
+Se a chave primária não for 'id': protected $primaryKey = 'nome_da_chave_primária'
+
+Se a chave primária não for auto-incrementada: public $incrementing = false;
+
+Se a chave primária não for do tipo inteiro: protected $keyType = 'string';
+
+Se quiser desabilitar os timestamps (create_at, updated_at): public $timestamps = false;
+*/
+
+
+
+Acresecentar em todos os modelos:
+protected $fillable=['campo1','campo3'];
+Colocar todos os campos exceto chaves primarias auto-inc
+
+
+
+Comando para criar modelo e controlador:
+php artosam make:model Price --resource
+
+Comando para criar controlador do user:
+php artisan make: controller UserController --resource --model=User
+
+Comando para criar requests:
+php artisan make:request PriceFormRequest
+
+
+
+
+
+
+
+
+1- Pegar na solucao da ficha 6
+
+2- Apagar o q nao interessa:
+	-modelos (exceto User) da pasta app/models
+	-controladores (exceto Controller9 da pasta app/http/controleres
+	-reuqsts da pasta app/http/requests
+	-pastas de vistas que nao intressam (courses, departments, disciplines) da pasta resources/views
+	-rotas que estao relacionadas com o projeto (courses, departments, disciplines) de routes/web.php
+
+3- Apagar o conteudo do metodo boot de AppServiceProvider.php (app/providers), com excecao da primeira linha, apagar: Use app/models/course
+
+4- Recriar BD:
+	-apagar a pasta database
+	-copiar a database do projeto fornecida
+	-copiar migartion do telescope da  ficha 6 para a pasta database/migrations
+	-executas comando: php artisan migrate:fresh --seed
+
+5- alterar sidebar para nao ter referencia a nenhuma rota que nao exita (resources/vies/layouts/appside.bar.php)
+
+6- copiar o componente Image da solucao da ficha 8:
+	app/view/components/field (copiar a pasta)
+	resoursces/vies/componentes/fields (copiar a pasta)
+
+7- copiar o icone do ShoppingCart para a sidebar.blade.php (resoucers/views/layouts/app/sidebar.php)
+
+	
+
+
+8- Copiar ficheiro de resources/views/partials/form-buttons.blade.php
+	Alterar plural Str::plural/$entity).
+
+
+
+
+-----------------------------
+
+Color/Category a partir do Course:
+
+1. Configurar modelo 
+
+2.Copiar todos os metodos do CourseController para ColorController/CategoryController
+	Substituir:
+		Se plural tiver mais do que 's'
+			1º substituir plural e depois singular Courses - Categories e courses - categories e depois Course - Categorie e course - categorie
+		Caso contrario
+			So substituir singular
+	Verificar todos os metodos no final
+		index - fazer orderby apenas por name
+		store/update verficiar se atributos existem --> abbreviation - code(course) e id (category)
+		destroy (tem softdeletes): $course->delete(); e enviar mesnagem de sucesoo
+
+3. Configuarar ColoFormRequest/CategoryFormRequest
+	Regras de validacao no ColorFormRequest similar ao CourseFormRequest, mas abbreviation --> code (max:50)
+	Regras de validacao no CategoryFormRequest era so deixar name (nao fazer merge)
+
+4.Configurar as vistas
+	Copiar as vistas dos courses e renomear a pasta (courses - color/categories)
+	em todas as vistas:
+		se plural tiver mais do que 's'
+			1º substituir plural e depois singular Courses - Categories e courses - categories e depois Course - Categorie e course - categorie
+		Caso contrario
+			So substituir singular Course - Color e course - color
+	Adaprar fields.blade.php
+		-code (adaptar a partir de abbreviation) e name para colors
+		-name para categories
+	Criar e afaptar componente Table
+		php artisan make::component colors/Table
+		Copiar codigo do componente de views/components/courses/table.blade.php
+			alterar variaveis
+			deixar apenas code/name para colors e name para categories
+
+
+
+
+Photos a funcionar
+Criar o trait
+dar update e store
+criar metodo/rota se for possivel apagar imagem
+adicionar filed das images nos fields
+usar rota no edit , colocar form para permitir apagar
+adicionar form do edit/create encypted "methot
+mostrar imagem no index -> alterar a table
+
+
+
+Filtros
+1 criar componente:
+	php artisan make: compomente categories/FilterCard
+2 adcionar as variaveis no construtor filterAction/resetUrl/(app/view/folder/filterCard.php)
+3- adicionar codigo na vista do componente resources/components/folder/filter-card
+4- chamar o filter-card (index.blade.php)
+
+
+MIDDLEWERE
+
+php artisan make:middleware IsNotBlocked
+
+AUTH()->check && auth()-> user()->blocked) {
+abort(403, "your account is blicked , please contact support for more infomation.');}
+return $next($request);
+
+php artisan make policy Tshirt_policy --model=Tshirt_image
+
+
+Profile
+-gender
+-photo url
+-nif
+-address
+default_payment_ref
+default_payment_type
+
+CRUD colors,categories,tshiort_images
+
+rotas para imagens privadas Route::get('thsirt_images/{thsirt_image}/image',[tshort_images::class, 'get Image'=
