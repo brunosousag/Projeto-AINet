@@ -1,0 +1,16 @@
+Depois de rever código + notas, eu diria que o projeto está bem encaminhado, mas ainda vejo 4 coisas importantes que podem faltar ou convém fechar.
+
+A mais importante: o profile do utilizador ainda só edita name e email. Nas notas aparece gender, photo_url, nif, address, default_payment_type e default_payment_ref. Nós temos esses campos na gestão admin de users, mas o próprio cliente/admin em settings/profile ainda não os consegue editar.
+
+Outra: o registo de clientes está desativado em config/fortify.php. A view e o CreateNewUser já existem e até têm gender, nif, address, mas Features::registration() está comentado. Se o enunciado espera que visitantes possam criar conta de cliente, isto falta.
+
+Também falta uma parte provável das encomendas: quando o funcionário/admin fecha uma encomenda, o código só muda status para closed. Não gera/associa receipt_url. As encomendas vindas do seeder têm recibos, mas encomendas novas não ficam com recibo. Se a professora valorizar “recibo/fatura após fechar encomenda”, isto é um buraco real.
+
+Por fim, há muito código antigo das fichas (teachers, students, courses, departments, etc.) ainda no projeto. Não está nas rotas principais, portanto não deve partir a app, mas nas notas dizia para apagar o que não interessa. Se ela for ver estrutura/limpeza, convém limpar.
+
+A minha prioridade seria:
+
+-Completar settings/profile com dados reais de cliente/foto.
+-Decidir/ativar registo de clientes.
+-Gerar recibo ao fechar encomenda.
+-Limpar código antigo das fichas.
