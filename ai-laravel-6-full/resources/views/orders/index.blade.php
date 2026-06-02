@@ -3,14 +3,26 @@
                          subheading="Track t-shirt orders">
     <div class="space-y-6">
         <form method="GET" action="{{ route('orders.index') }}" class="flex flex-wrap items-end gap-3">
-            <flux:input name="search" label="Search" value="{{ $filters['search'] }}" />
+            <flux:input name="search" label="Order, customer or NIF" value="{{ $filters['search'] }}" />
 
-            <flux:select name="status" label="Status">
-                <option value="">All</option>
-                @foreach (['pending' => 'Pending', 'closed' => 'Closed', 'canceled' => 'Canceled'] as $value => $label)
-                    <option value="{{ $value }}" @selected($filters['status'] === $value)>{{ $label }}</option>
-                @endforeach
-            </flux:select>
+            @if ($canFilterDates || ! $canManageOrders)
+                <flux:select name="status" label="Status">
+                    <option value="">All</option>
+                    @foreach (['pending' => 'Pending', 'closed' => 'Closed', 'canceled' => 'Canceled'] as $value => $label)
+                        <option value="{{ $value }}" @selected($filters['status'] === $value)>{{ $label }}</option>
+                    @endforeach
+                </flux:select>
+            @else
+                <div>
+                    <p class="mb-3 text-sm font-medium text-zinc-800 dark:text-white">Status</p>
+                    <p class="flex h-10 items-center rounded-lg border border-zinc-200 bg-zinc-100 px-3 text-sm text-zinc-700 dark:border-white/10 dark:bg-white/10 dark:text-zinc-300">Pending</p>
+                </div>
+            @endif
+
+            @if ($canFilterDates)
+                <flux:input type="date" name="date_from" label="From" value="{{ $filters['date_from'] }}" />
+                <flux:input type="date" name="date_to" label="To" value="{{ $filters['date_to'] }}" />
+            @endif
 
             <flux:button type="submit" icon="magnifying-glass" variant="primary">Filter</flux:button>
             <flux:button :href="route('orders.index')" icon="x-mark" variant="ghost">Reset</flux:button>

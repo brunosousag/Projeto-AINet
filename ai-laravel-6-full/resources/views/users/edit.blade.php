@@ -8,4 +8,9 @@
         @include('users.partials.fields', ['mode' => 'edit'])
         @include('partials.form-buttons', ['entity' => 'user', 'value' => $user, 'show' => true, 'save' => true, 'cancel' => true])
     </form>
+
+    <form id="delete-photo-form" method="POST" action="{{ route('users.photo.destroy', ['user' => $user]) }}" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
 </x-layouts::main-content>

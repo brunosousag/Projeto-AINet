@@ -210,3 +210,9 @@ default_payment_type
 CRUD colors,categories,tshiort_images
 
 rotas para imagens privadas Route::get('thsirt_images/{thsirt_image}/image',[tshort_images::class, 'get Image'=
+
+
+
+
+CRUD images
+PASTA privada recibos

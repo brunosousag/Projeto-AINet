@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'payments' => [
+        'url' => env('PAYMENTS_API_URL', 'https://ainet-payments-api.vercel.app/api/payments'),
+    ],
+
 ];

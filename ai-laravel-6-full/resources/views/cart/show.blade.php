@@ -9,10 +9,14 @@
         @else
             <div class="space-y-3">
                 @foreach ($cart['lines'] as $item)
-                    <div class="grid gap-4 rounded-lg border border-zinc-200 bg-white p-4 md:grid-cols-[96px_1fr_auto] dark:border-zinc-700 dark:bg-zinc-900">
-                        <img src="{{ $item['tshirt_image']->image_full_url }}"
-                             alt="{{ $item['tshirt_image']->name }}"
-                             class="aspect-square w-24 rounded bg-zinc-100 object-contain p-2 dark:bg-zinc-800">
+                    <div x-data="{ selectedColor: '{{ $item['color']->code }}' }"
+                         class="grid gap-4 rounded-lg border border-zinc-200 bg-white p-4 md:grid-cols-[112px_1fr_auto] dark:border-zinc-700 dark:bg-zinc-900">
+                        <x-tshirt-preview :image-url="$item['tshirt_image']->image_full_url"
+                                          :alt="$item['tshirt_image']->name"
+                                          :color-code="$item['color']->code"
+                                          :settings="$item['settings']"
+                                          dynamic
+                                          class="w-28 rounded border border-zinc-200 dark:border-zinc-700" />
 
                         <div class="space-y-3">
                             <div>
@@ -25,31 +29,35 @@
                                         - discount
                                     @endif
                                 </p>
+                                @if ($item['discount_remaining'] > 0)
+                                    <p class="mt-1 text-xs text-amber-700 dark:text-amber-300">
+                                        Add {{ $item['discount_remaining'] }} more to unlock the quantity discount.
+                                    </p>
+                                @else
+                                    <p class="mt-1 text-xs text-green-700 dark:text-green-300">
+                                        Quantity discount applied.
+                                    </p>
+                                @endif
                             </div>
 
                             <form method="POST" action="{{ route('cart.update', ['line' => $item['line']]) }}"
-                                  class="grid gap-2 sm:grid-cols-[180px_90px_100px_auto]">
+                                  class="space-y-3">
                                 @csrf
                                 @method('PUT')
 
-                                <flux:select name="color_code" label="Color">
-                                    @foreach ($colors as $color)
-                                        <option value="{{ $color->code }}" @selected($color->code === $item['color']->code)>
-                                            {{ $color->name }}
-                                        </option>
-                                    @endforeach
-                                </flux:select>
+                                <x-color-swatches :colors="$colors" :selected="$item['color']->code" />
 
-                                <flux:select name="size" label="Size">
-                                    @foreach ($sizes as $size)
-                                        <option value="{{ $size }}" @selected($size === $item['size'])>{{ $size }}</option>
-                                    @endforeach
-                                </flux:select>
+                                <div class="grid gap-2 sm:grid-cols-[90px_100px_auto]">
+                                    <div>
+                                        <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Size</p>
+                                        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{{ $item['size'] }}</p>
+                                    </div>
 
-                                <flux:input type="number" name="qty" label="Qty" min="0" max="999" value="{{ $item['qty'] }}" />
+                                    <flux:input type="number" name="qty" label="Quantity" min="0" max="999" value="{{ $item['qty'] }}" />
 
-                                <div class="flex items-end">
-                                    <flux:button type="submit" icon="check" variant="primary">Update</flux:button>
+                                    <div class="flex items-end">
+                                        <flux:button type="submit" icon="check" variant="primary">Update</flux:button>
+                                    </div>
                                 </div>
                             </form>
                         </div>

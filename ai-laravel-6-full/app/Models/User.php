@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,12 +13,29 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-#[Fillable(['name', 'email', 'password', 'user_type', 'gender', 'blocked', 'photo_url', 'custom'])]
-#[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
+
+    protected $fillable = ['name', 'email', 'password', 'user_type', 'gender', 'blocked', 'photo_url', 'custom'];
+
+    protected $hidden = ['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'];
+
+    protected static function booted(): void
+    {
+        static::deleted(function (User $user): void {
+            if ($user->isCustomer()) {
+                $user->customer()->first()?->delete();
+            }
+        });
+
+        static::restored(function (User $user): void {
+            if ($user->isCustomer()) {
+                $user->customer()->first()?->restore();
+            }
+        });
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -55,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
             return asset("storage/photos/{$this->photo_url}");
         }
 
-        return asset("storage/photos/anonymous.png");
+        return asset('storage/photos/anonymous.png');
     }
 
     public function customer(): HasOne

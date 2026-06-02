@@ -7,6 +7,7 @@ use App\Models\Color;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ColorController extends Controller
@@ -38,13 +39,14 @@ class ColorController extends Controller
         Gate::authorize('manage-catalog');
 
         return view('colors.create', [
-            'color' => new Color(),
+            'color' => new Color,
         ]);
     }
 
     public function store(ColorFormRequest $request): RedirectResponse
     {
-        $color = Color::create($request->validated());
+        $color = Color::create($request->safe()->only(['code', 'name']));
+        $this->saveBaseImage($request, $color);
 
         return redirect()
             ->route('colors.index')
@@ -72,7 +74,8 @@ class ColorController extends Controller
 
     public function update(ColorFormRequest $request, Color $color): RedirectResponse
     {
-        $color->update($request->validated());
+        $color->update($request->safe()->only(['name']));
+        $this->saveBaseImage($request, $color);
 
         return redirect()
             ->route('colors.index')
@@ -90,5 +93,12 @@ class ColorController extends Controller
             ->route('colors.index')
             ->with('alert-type', 'success')
             ->with('alert-msg', "Color '{$color->name}' has been deleted successfully.");
+    }
+
+    private function saveBaseImage(ColorFormRequest $request, Color $color): void
+    {
+        if ($file = $request->file('base_image_file')) {
+            Storage::disk('public')->putFileAs('tshirt_base', $file, "{$color->code}.jpg");
+        }
     }
 }

@@ -37,20 +37,32 @@
         '1/3', '2/3', '1/4', '2/4', '3/4', '1/5', '2/5', '3/5', '4/5'  => 'max-h-full',
     };
 @endphp
-<div {{ $attributes }}>
+<div data-image-field {{ $attributes }}>
     <div class="flex-col">
         <div class="block font-medium text-sm text-gray-700 dark:text-gray-300 mt-6">
             {{ $label }}
         </div>
         <img class="{{$widthClass}} {{$maxHeightClass}} aspect-auto"
-             src="{{ $imageUrl }}">
+             src="{{ $imageUrl }}"
+             alt="{{ $label }}">
         @if(!$readonly)
             <div class="{{$widthClass}} flex-col space-y-4 items-stretch mt-4">
                 <div>
                     <div class="flex flex-row items-center">
                         <input id="id_{{ $name }}" name="{{ $name }}" type="file"
-                                accept="image/png, image/jpeg"
-                                onchange="document.getElementById('id_{{ $name }}_selected_file').innerHTML= document.getElementById('id_{{ $name }}').files[0].name ?? ''"
+                                accept="{{ $accept }}"
+                                onchange="
+                                    const file = this.files[0];
+                                    document.getElementById('id_{{ $name }}_selected_file').textContent = file?.name ?? '';
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onload = (event) => {
+                                            this.closest('[data-image-field]').querySelector('img').src = event.target.result;
+                                            window.dispatchEvent(new CustomEvent('image-preview-selected', { detail: event.target.result }));
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                "
                                 class="hidden"/>
                         <label for="id_{{ $name }}"
                                class="min-w-32
@@ -78,7 +90,7 @@
                 </div>
                 @if($deleteAllow)
                     <div>
-                        <flux:button variant="danger" onclick="document.getElementById('{{ $deleteForm }}').submit()">{{ $deleteTitle }}</flux:button>
+                        <flux:button class="cursor-pointer" variant="danger" onclick="document.getElementById('{{ $deleteForm }}').submit()">{{ $deleteTitle }}</flux:button>
                     </div>
                 @endif
             </div>

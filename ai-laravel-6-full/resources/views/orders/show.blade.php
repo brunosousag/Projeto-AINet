@@ -43,13 +43,15 @@
 
         <section class="space-y-3">
             @foreach ($order->items as $item)
-                <div class="grid gap-4 rounded-lg border border-zinc-200 bg-white p-4 md:grid-cols-[80px_1fr_auto] dark:border-zinc-700 dark:bg-zinc-900">
-                    <img src="{{ $item->tshirtImage->image_full_url }}"
-                         alt="{{ $item->tshirtImage->name }}"
-                         class="h-20 w-20 rounded bg-zinc-100 object-contain p-2 dark:bg-zinc-800">
+                <div class="grid gap-4 rounded-lg border border-zinc-200 bg-white p-4 md:grid-cols-[96px_1fr_auto] dark:border-zinc-700 dark:bg-zinc-900">
+                    <x-tshirt-preview :image-url="$item->design_image_url"
+                                      :alt="$item->design_name"
+                                      :color-code="$item->color?->code ?? 'fafafa'"
+                                      :settings="$item->design_settings"
+                                      class="w-24 rounded border border-zinc-200 dark:border-zinc-700" />
 
                     <div>
-                        <h2 class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $item->tshirtImage->name }}</h2>
+                        <h2 class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $item->design_name }}</h2>
                         <p class="text-sm text-zinc-500 dark:text-zinc-400">
                             {{ $item->color?->name }} - {{ $item->size }} - {{ $item->qty }} unit(s)
                         </p>
@@ -71,7 +73,7 @@
 
             <div class="grow"></div>
 
-            @if ($order->receipt_url)
+            @if ($canViewReceipt && $order->status === 'closed' && $order->receipt_url)
                 <flux:button icon="document-arrow-down" variant="filled" :href="route('orders.receipt', ['order' => $order])">Receipt</flux:button>
             @endif
 
@@ -83,7 +85,7 @@
                 </form>
             @endif
 
-            @if ($order->status === 'pending')
+            @if ($canCancelOrder && $order->status === 'pending')
                 <form method="POST" action="{{ route('orders.cancel', ['order' => $order]) }}" class="flex flex-wrap items-end gap-2">
                     @csrf
                     @method('PATCH')

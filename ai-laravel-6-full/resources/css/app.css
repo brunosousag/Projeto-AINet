@@ -65,6 +65,17 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+[x-cloak] {
+    display: none !important;
+}
+
+button:not(:disabled),
+a[href],
+label[for],
+input[type='color'] {
+    cursor: pointer;
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

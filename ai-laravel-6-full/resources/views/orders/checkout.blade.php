@@ -45,9 +45,11 @@
             <div class="space-y-3">
                 @foreach ($cart['lines'] as $item)
                     <div class="flex gap-3">
-                        <img src="{{ $item['tshirt_image']->image_full_url }}"
-                             alt="{{ $item['tshirt_image']->name }}"
-                             class="h-14 w-14 rounded bg-zinc-100 object-contain p-1 dark:bg-zinc-800">
+                        <x-tshirt-preview :image-url="$item['tshirt_image']->image_full_url"
+                                          :alt="$item['tshirt_image']->name"
+                                          :color-code="$item['color']->code"
+                                          :settings="$item['settings']"
+                                          class="w-14 shrink-0 rounded border border-zinc-200 dark:border-zinc-700" />
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $item['tshirt_image']->name }}</p>
                             <p class="text-xs text-zinc-500 dark:text-zinc-400">

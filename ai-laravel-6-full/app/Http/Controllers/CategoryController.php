@@ -37,7 +37,7 @@ class CategoryController extends Controller
         Gate::authorize('manage-catalog');
 
         return view('categories.create', [
-            'category' => new Category(),
+            'category' => new Category,
         ]);
     }
 

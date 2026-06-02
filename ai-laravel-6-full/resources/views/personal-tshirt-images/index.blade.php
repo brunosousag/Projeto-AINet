@@ -20,11 +20,15 @@
         @else
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 @foreach ($tshirtImages as $tshirtImage)
-                    <article class="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-                        <div class="bg-zinc-100 dark:bg-zinc-800">
-                            <img src="{{ $tshirtImage->image_full_url }}"
-                                 alt="{{ $tshirtImage->name }}"
-                                 class="aspect-square w-full object-contain p-6">
+                    <article x-data="{ selectedColor: '{{ $colors->first()?->code ?? 'fafafa' }}' }"
+                             class="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
+                        <div class="bg-zinc-100 p-5 dark:bg-zinc-800">
+                            <x-tshirt-preview :image-url="$tshirtImage->image_full_url"
+                                              :alt="$tshirtImage->name"
+                                              :color-code="$colors->first()?->code ?? 'fafafa'"
+                                              :settings="$tshirtImage->custom"
+                                              dynamic
+                                              class="mx-auto w-full max-w-72" />
                         </div>
 
                         <div class="space-y-4 p-4">
@@ -39,30 +43,29 @@
                                 @csrf
                                 <input type="hidden" name="tshirt_image_id" value="{{ $tshirtImage->id }}">
 
-                                <div class="grid grid-cols-3 gap-2">
-                                    <flux:select name="color_code" label="Color">
-                                        @foreach ($colors as $color)
-                                            <option value="{{ $color->code }}">{{ $color->name }}</option>
-                                        @endforeach
-                                    </flux:select>
+                                <x-color-swatches :colors="$colors" />
 
+                                <div class="grid grid-cols-2 gap-2">
                                     <flux:select name="size" label="Size">
                                         @foreach ($sizes as $size)
                                             <option value="{{ $size }}">{{ $size }}</option>
                                         @endforeach
                                     </flux:select>
 
-                                    <flux:input type="number" name="qty" label="Qty" min="1" max="999" value="1" />
+                                    <flux:input type="number" name="qty" label="Quantity" min="1" max="999" value="1" />
                                 </div>
 
                                 <flux:button type="submit" icon="shopping-cart" variant="primary" class="w-full">Add</flux:button>
                             </form>
 
-                            <form method="POST" action="{{ route('personal-tshirt-images.destroy', ['personal_tshirt_image' => $tshirtImage]) }}">
-                                @csrf
-                                @method('DELETE')
-                                <flux:button type="submit" icon="trash" variant="danger" class="w-full">Delete</flux:button>
-                            </form>
+                            <div class="grid grid-cols-2 gap-2">
+                                <flux:button :href="route('personal-tshirt-images.edit', ['personal_tshirt_image' => $tshirtImage])" icon="pencil-square" variant="filled">Edit</flux:button>
+                                <form method="POST" action="{{ route('personal-tshirt-images.destroy', ['personal_tshirt_image' => $tshirtImage]) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <flux:button type="submit" icon="trash" variant="danger" class="w-full">Delete</flux:button>
+                                </form>
+                            </div>
                         </div>
                     </article>
                 @endforeach

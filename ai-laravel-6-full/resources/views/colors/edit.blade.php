@@ -1,7 +1,7 @@
 <x-layouts::main-content :title="$color->name"
                          :heading="'Edit color '.$color->name"
                          subheading="Update t-shirt color data">
-    <form method="POST" action="{{ route('colors.update', ['color' => $color]) }}">
+    <form method="POST" action="{{ route('colors.update', ['color' => $color]) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="mt-6 space-y-4">

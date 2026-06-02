@@ -16,7 +16,6 @@ class CartController extends Controller
         return view('cart.show', [
             'cart' => $cartService->summary(),
             'colors' => Color::orderBy('name')->get(),
-            'sizes' => ['XS', 'S', 'M', 'L', 'XL'],
         ]);
     }
 
@@ -27,6 +26,7 @@ class CartController extends Controller
             'color_code' => ['required', 'string', 'exists:colors,code'],
             'size' => ['required', 'in:XS,S,M,L,XL'],
             'qty' => ['required', 'integer', 'min:1', 'max:999'],
+            ...$this->previewRules(),
         ]);
 
         $tshirtImage = TshirtImage::findOrFail($validated['tshirt_image_id']);
@@ -38,7 +38,13 @@ class CartController extends Controller
             403
         );
 
-        $cartService->add($tshirtImage, $color, $validated['size'], (int) $validated['qty']);
+        $cartService->add(
+            $tshirtImage,
+            $color,
+            $validated['size'],
+            (int) $validated['qty'],
+            $this->previewSettings($validated, $tshirtImage->custom ?? []),
+        );
 
         return back()
             ->with('alert-type', 'success')
@@ -49,12 +55,15 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'color_code' => ['required', 'string', 'exists:colors,code'],
-            'size' => ['required', 'in:XS,S,M,L,XL'],
             'qty' => ['required', 'integer', 'min:0', 'max:999'],
         ]);
 
         $color = Color::findOrFail($validated['color_code']);
-        $cartService->update($line, $color, $validated['size'], (int) $validated['qty']);
+        $cartService->update(
+            $line,
+            $color,
+            (int) $validated['qty'],
+        );
 
         return back()
             ->with('alert-type', 'success')
@@ -77,5 +86,33 @@ class CartController extends Controller
         return back()
             ->with('alert-type', 'success')
             ->with('alert-msg', 'Carrinho limpo.');
+    }
+
+    /**
+     * @return array<string, list<string>>
+     */
+    private function previewRules(): array
+    {
+        return [
+            'preview_top' => ['sometimes', 'integer', 'between:0,70'],
+            'preview_width' => ['sometimes', 'integer', 'between:10,90'],
+            'preview_height' => ['sometimes', 'integer', 'between:10,90'],
+            'preview_opacity' => ['sometimes', 'integer', 'between:10,100'],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     * @param  array<string, mixed>  $defaults
+     * @return array<string, int>
+     */
+    private function previewSettings(array $validated, array $defaults): array
+    {
+        return [
+            'preview_top' => (int) ($validated['preview_top'] ?? $defaults['preview_top'] ?? 25),
+            'preview_width' => (int) ($validated['preview_width'] ?? $defaults['preview_width'] ?? 48),
+            'preview_height' => (int) ($validated['preview_height'] ?? $defaults['preview_height'] ?? 50),
+            'preview_opacity' => (int) ($validated['preview_opacity'] ?? $defaults['preview_opacity'] ?? 100),
+        ];
     }
 }

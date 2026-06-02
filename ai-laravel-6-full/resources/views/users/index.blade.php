@@ -61,7 +61,7 @@
                                     </div>
                                 </td>
                                 <td class="px-2 py-2 text-left">
-                                    @if (auth()->id() === $user->id)
+                                    @if (auth()->id() === $user->id || $user->isCustomer())
                                         {{ $typeLabels[$user->user_type] ?? $user->user_type }}
                                     @else
                                         <form method="POST" action="{{ route('users.change-type', ['user' => $user]) }}" class="flex items-center gap-2">
@@ -69,7 +69,7 @@
                                             @method('PATCH')
                                             <select name="user_type"
                                                     class="rounded border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-600 dark:bg-zinc-900">
-                                                @foreach ($typeLabels as $value => $label)
+                                                @foreach ($collaboratorTypeLabels as $value => $label)
                                                     <option value="{{ $value }}" @selected($user->user_type === $value)>{{ $label }}</option>
                                                 @endforeach
                                             </select>
@@ -107,9 +107,11 @@
                                     </a>
                                 </td>
                                 <td class="px-0.5">
-                                    <a href="{{ route('users.edit', ['user' => $user]) }}">
-                                        <flux:icon.pencil-square class="size-5 hover:text-blue-600" />
-                                    </a>
+                                    @unless ($user->isCustomer())
+                                        <a href="{{ route('users.edit', ['user' => $user]) }}">
+                                            <flux:icon.pencil-square class="size-5 hover:text-blue-600" />
+                                        </a>
+                                    @endunless
                                 </td>
                                 <td class="px-0.5">
                                     @unless (auth()->id() === $user->id)

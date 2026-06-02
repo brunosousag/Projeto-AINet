@@ -12,17 +12,20 @@ class CartService
     private const SessionKey = 'cart';
 
     /**
-     * @return array<string, array{tshirt_image_id:int,color_code:string,size:string,qty:int}>
+     * @return array<string, array{tshirt_image_id:int,color_code:string,size:string,qty:int,settings?:array<string, int>}>
      */
     public function all(): array
     {
         return session(self::SessionKey, []);
     }
 
-    public function add(TshirtImage $tshirtImage, Color $color, string $size, int $qty): void
+    /**
+     * @param  array<string, int>  $settings
+     */
+    public function add(TshirtImage $tshirtImage, Color $color, string $size, int $qty, array $settings): void
     {
         $cart = $this->all();
-        $key = $this->lineKey($tshirtImage->id, $color->code, $size);
+        $key = $this->lineKey($tshirtImage->id, $color->code, $size, $settings);
         $currentQty = $cart[$key]['qty'] ?? 0;
 
         $cart[$key] = [
@@ -30,12 +33,13 @@ class CartService
             'color_code' => $color->code,
             'size' => $size,
             'qty' => $currentQty + $qty,
+            'settings' => $settings,
         ];
 
         $this->put($cart);
     }
 
-    public function update(string $line, Color $color, string $size, int $qty): void
+    public function update(string $line, Color $color, int $qty): void
     {
         $cart = $this->all();
 
@@ -47,12 +51,13 @@ class CartService
         unset($cart[$line]);
 
         if ($qty > 0) {
-            $newKey = $this->lineKey($item['tshirt_image_id'], $color->code, $size);
+            $newKey = $this->lineKey($item['tshirt_image_id'], $color->code, $item['size'], $item['settings'] ?? []);
             $cart[$newKey] = [
                 'tshirt_image_id' => $item['tshirt_image_id'],
                 'color_code' => $color->code,
-                'size' => $size,
+                'size' => $item['size'],
                 'qty' => ($cart[$newKey]['qty'] ?? 0) + $qty,
+                'settings' => $item['settings'] ?? [],
             ];
         }
 
@@ -106,6 +111,7 @@ class CartService
 
                 $unitPrice = $this->unitPrice($tshirtImage, (int) $item['qty'], $prices);
                 $subTotal = $unitPrice * (int) $item['qty'];
+                $settings = $item['settings'] ?? $tshirtImage->custom ?? [];
 
                 return [
                     'line' => $line,
@@ -113,9 +119,11 @@ class CartService
                     'color' => $color,
                     'size' => $item['size'],
                     'qty' => (int) $item['qty'],
+                    'settings' => $settings,
                     'unit_price' => $unitPrice,
                     'sub_total' => $subTotal,
                     'has_discount' => (int) $item['qty'] >= $prices->qty_discount,
+                    'discount_remaining' => max(0, $prices->qty_discount - (int) $item['qty']),
                 ];
             })
             ->filter()
@@ -128,9 +136,14 @@ class CartService
         ];
     }
 
-    public function lineKey(int $tshirtImageId, string $colorCode, string $size): string
+    /**
+     * @param  array<string, int>  $settings
+     */
+    public function lineKey(int $tshirtImageId, string $colorCode, string $size, array $settings = []): string
     {
-        return rtrim(strtr(base64_encode("$tshirtImageId|$colorCode|$size"), '+/', '-_'), '=');
+        $customization = substr(hash('sha256', json_encode($settings, JSON_THROW_ON_ERROR)), 0, 12);
+
+        return rtrim(strtr(base64_encode("$tshirtImageId|$colorCode|$size|$customization"), '+/', '-_'), '=');
     }
 
     private function put(array $cart): void

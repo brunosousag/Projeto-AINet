@@ -20,7 +20,16 @@ class PersonalTshirtImageFormRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:2000',
-            'image_file' => 'required|image|mimes:png,jpg,jpeg,webp|max:4096',
+            'image_file' => [
+                $this->isMethod('post') ? 'required' : 'nullable',
+                'image',
+                'mimes:png,jpg,jpeg,webp',
+                'max:4096',
+            ],
+            'preview_top' => 'required|integer|min:0|max:70',
+            'preview_width' => 'required|integer|min:10|max:90',
+            'preview_height' => 'required|integer|min:10|max:90',
+            'preview_opacity' => 'required|integer|min:10|max:100',
         ];
     }
 }

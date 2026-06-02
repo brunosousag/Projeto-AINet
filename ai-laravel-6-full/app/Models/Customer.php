@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['id', 'nif', 'address', 'default_payment_type', 'default_payment_ref', 'custom'])]
 class Customer extends Model
 {
     use SoftDeletes;
+
+    protected $fillable = ['id', 'nif', 'address', 'default_payment_type', 'default_payment_ref', 'custom'];
 
     public $incrementing = false;
 

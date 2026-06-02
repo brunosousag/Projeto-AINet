@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -13,13 +12,20 @@ class UsersSeeder extends Seeder
 {
     use SeederUtils;
 
-    private $typesOfUsers =  ['A', 'F', 'C'];
+    private $typesOfUsers = ['A', 'F', 'C'];
+
     private $numberOfUsers = [6, 15, 500];
+
     private $numberOfSoftDeletedUsers = [1, 3, 35];
+
     private $numberOfBlocked = [1, 3, 30];
+
     private $files_M = [];
+
     private $files_F = [];
+
     private $hashedPassword = null;
+
     private $faker = null;
 
     public static $allUsers = [];
@@ -27,7 +33,7 @@ class UsersSeeder extends Seeder
     public function run()
     {
         $this->command->table(['Users table seeder notice'], [
-            ["As photos serão armazenadas na pasta storage/app/public/photos"]
+            ['As photos serão armazenadas na pasta storage/app/public/photos'],
         ]);
 
         $this->hashedPassword = bcrypt('123');
@@ -35,7 +41,7 @@ class UsersSeeder extends Seeder
         $this->cleanStorageFolder('photos');
         $this->preencherNamesFicheirosPhotos();
 
-        $this->faker = DatabaseSeeder::$seedLanguage == 'pt_PT' ? \Faker\Factory::create('pt_PT') : \Faker\Factory::create();
+        $this->faker = DatabaseSeeder::$seedLanguage == 'pt_PT' ? Factory::create('pt_PT') : Factory::create();
 
         $variosUsers = [];
         $totalGuardados = 0;
@@ -75,7 +81,7 @@ class UsersSeeder extends Seeder
         $this->copiarPhotos(UsersSeeder::$allUsers['F']);
         $totalCustomers = UsersSeeder::$allUsers['C']->count();
         $first10Customers = UsersSeeder::$allUsers['C']->take(10);
-        $LastCustomers = UsersSeeder::$allUsers['C']->take(-1* ($totalCustomers - 10)); // todos menos os primeiros 10
+        $LastCustomers = UsersSeeder::$allUsers['C']->take(-1 * ($totalCustomers - 10)); // todos menos os primeiros 10
         $this->copiarPhotos($first10Customers->shuffle());
         $this->copiarPhotos($LastCustomers->shuffle());
 
@@ -102,11 +108,11 @@ class UsersSeeder extends Seeder
         }
 
         if (count($idsToBlock) > 0) {
-            $this->command->info("Bloquear " . count($idsToBlock) . " users na base de dados");
+            $this->command->info('Bloquear '.count($idsToBlock).' users na base de dados');
             DB::table('users')->whereIn('id', $idsToBlock)->update(['blocked' => 1]);
         }
         if (count($idsToDelete) > 0) {
-            $this->command->info("Soft Delete " . count($idsToDelete) . " users na base de dados");
+            $this->command->info('Soft Delete '.count($idsToDelete).' users na base de dados');
             DB::table('users')->whereNotIn('id', $idsToDelete)->update(['deleted_at' => null]);
         }
 
@@ -129,18 +135,18 @@ class UsersSeeder extends Seeder
         }
 
         // Atualizar o softdelete dos customers para refletir o softdelete dos users
-        $this->command->info("Atualizar os softdeletes dos customers para ifcarem iguais aos clientes");
-        DB::update("
+        $this->command->info('Atualizar os softdeletes dos customers para ifcarem iguais aos clientes');
+        DB::update('
             UPDATE customers
             SET deleted_at = (
                 SELECT users.deleted_at
                 FROM users
                 WHERE users.id = customers.id
             )
-            ");
+            ');
 
         // Mudar alguns email para simplificar testes
-        $this->command->info("Mudar alguns email para simplificar testes");
+        $this->command->info('Mudar alguns email para simplificar testes');
         $ids = DB::table('users')->where('user_type', 'A')->take(3)->pluck('id')->toArray();
         $i = 1;
         foreach ($ids as $id) {
@@ -209,6 +215,7 @@ class UsersSeeder extends Seeder
         $email_verified_at = $faker->dateTimeBetween($createdAt, '-2 months');
         $updatedAt = $faker->dateTimeBetween($email_verified_at, '-1 months');
         $deletedAt = $faker->dateTimeBetween($updatedAt);
+
         return [
             'name' => $fullname,
             'email' => $email,
@@ -221,23 +228,23 @@ class UsersSeeder extends Seeder
             'blocked' => 0,
             'gender' => $gender,
             'deleted_at' => $deletedAt,
-            'custom' => null
+            'custom' => null,
         ];
     }
-
 
     private function newFakerCustomer($faker, $customerUser)
     {
         $paymentType = '';
         $paymentReference = '';
         $this->ramdomPaymentMethod($customerUser->email, $paymentType, $paymentReference);
+
         return [
             'id' => $customerUser->id,
             'nif' => $faker->randomNumber($nbDigits = 9, $strict = true),
             'address' => $faker->address,
             'default_payment_type' => $paymentType,
             'default_payment_ref' => $paymentReference,
-            'custom' => null
+            'custom' => null,
         ];
     }
 }

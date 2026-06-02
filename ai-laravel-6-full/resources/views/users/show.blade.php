@@ -12,7 +12,7 @@
         @include('partials.form-buttons', [
             'entity' => 'user',
             'value' => $user,
-            'edit' => true,
+            'edit' => ! $user->isCustomer(),
             'delete' => auth()->id() !== $user->id,
             'deleteForm' => 'delete-form',
         ])

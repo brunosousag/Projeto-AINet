@@ -35,8 +35,8 @@ class CheckoutFormRequest extends FormRequest
                 $paymentType = $this->string('payment_type')->toString();
                 $paymentRef = $this->string('payment_ref')->toString();
 
-                if ($paymentType === 'Visa' && ! preg_match('/^\d{16}$/', $paymentRef)) {
-                    $validator->errors()->add('payment_ref', 'Visa reference must have exactly 16 digits.');
+                if ($paymentType === 'Visa' && ! preg_match('/^4\d{15}$/', $paymentRef)) {
+                    $validator->errors()->add('payment_ref', 'Visa reference must have exactly 16 digits and start with 4.');
                 }
 
                 if ($paymentType === 'MB WAY' && ! preg_match('/^9\d{8}$/', $paymentRef)) {

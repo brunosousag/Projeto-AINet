@@ -17,6 +17,9 @@
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">Orders</p>
                 <p class="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">{{ $stats['orders'] }}</p>
                 <p class="mt-1 text-xs text-zinc-500">{{ $stats['pending_orders'] }} pending, {{ $stats['closed_orders'] }} closed, {{ $stats['canceled_orders'] }} canceled</p>
+                @if ($management && $canSeeStatistics)
+                    <p class="mt-1 text-xs text-zinc-500">{{ number_format($stats['cancellation_rate'], 1) }}% cancellation rate</p>
+                @endif
             </section>
 
             <section class="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
@@ -117,12 +120,153 @@
                 <section class="space-y-3">
                     <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Shortcuts</h2>
                     <div class="grid gap-3">
-                        <flux:button icon="photo" variant="filled" :href="route('tshirt-images.index')">Catalog</flux:button>
+                        <flux:button icon="photo" variant="filled" :href="route('shop.index')">Catalog</flux:button>
                         <flux:button icon="clipboard-document-list" variant="filled" :href="route('orders.index')">My orders</flux:button>
                         <flux:button icon="cloud-arrow-up" variant="filled" :href="route('personal-tshirt-images.index')">My images</flux:button>
                     </div>
                 </section>
             @endif
         </div>
+
+        @if ($management && $canSeeStatistics)
+            @php
+                $monthlyMax = max(1, (float) $monthlySales->max('revenue'));
+                $colorMax = max(1, (int) $colorSales->max('sold_qty'));
+                $sizeMax = max(1, (int) $sizeSales->max('sold_qty'));
+                $categoryMax = max(1, (int) $categorySales->max('sold_qty'));
+                $designTypeMax = max(1, (int) $designTypeSales->max('sold_qty'));
+                $reasonMax = max(1, (int) $cancellationReasons->max('total'));
+            @endphp
+
+            <section class="space-y-3">
+                <div>
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Monthly closed sales</h2>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400">Revenue and completed orders during the last 12 months</p>
+                </div>
+
+                <div class="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                    @foreach ($monthlySales as $month)
+                        <div class="grid grid-cols-[68px_1fr_96px] items-center gap-3 text-sm">
+                            <span class="text-zinc-500 dark:text-zinc-400">{{ $month['label'] }}</span>
+                            <div class="h-3 overflow-hidden rounded bg-zinc-100 dark:bg-zinc-800">
+                                <div class="h-full rounded bg-green-600"
+                                     style="width: {{ $month['revenue'] > 0 ? max(1, $month['revenue'] * 100 / $monthlyMax) : 0 }}%"></div>
+                            </div>
+                            <span class="text-right text-zinc-700 dark:text-zinc-300">
+                                {{ number_format($month['revenue'], 2) }} EUR
+                                <span class="block text-xs text-zinc-500">{{ $month['orders'] }} order(s)</span>
+                            </span>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+
+            <div class="grid gap-6 xl:grid-cols-3">
+                <section class="space-y-3">
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Best-selling colors</h2>
+                    <div class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                        @foreach ($colorSales as $item)
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between gap-3 text-sm">
+                                    <span class="flex items-center gap-2">
+                                        <span class="size-4 rounded-full border border-zinc-300" style="background-color: #{{ $item->color_code }}"></span>
+                                        {{ $item->color?->name ?? $item->color_code }}
+                                    </span>
+                                    <span>{{ (int) $item->sold_qty }}</span>
+                                </div>
+                                <div class="h-2 overflow-hidden rounded bg-zinc-100 dark:bg-zinc-800">
+                                    <div class="h-full rounded bg-blue-600" style="width: {{ $item->sold_qty * 100 / $colorMax }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Sizes sold</h2>
+                    <div class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                        @foreach ($sizeSales as $item)
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between gap-3 text-sm">
+                                    <span>{{ $item->size }}</span>
+                                    <span>{{ (int) $item->sold_qty }}</span>
+                                </div>
+                                <div class="h-2 overflow-hidden rounded bg-zinc-100 dark:bg-zinc-800">
+                                    <div class="h-full rounded bg-amber-500" style="width: {{ $item->sold_qty * 100 / $sizeMax }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Top customers</h2>
+                    <div class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                        @foreach ($topCustomers as $item)
+                            <div class="flex items-start justify-between gap-3 border-b border-zinc-100 pb-2 last:border-0 last:pb-0 dark:border-zinc-800">
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">{{ $item->customer?->user?->name ?? 'Unknown customer' }}</p>
+                                    <p class="text-xs text-zinc-500">{{ $item->orders_count }} order(s)</p>
+                                </div>
+                                <p class="shrink-0 text-sm font-semibold text-zinc-700 dark:text-zinc-300">{{ number_format((float) $item->revenue, 2) }} EUR</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            </div>
+
+            <div class="grid gap-6 xl:grid-cols-3">
+                <section class="space-y-3">
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Best-selling categories</h2>
+                    <div class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                        @foreach ($categorySales as $item)
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between gap-3 text-sm">
+                                    <span class="truncate">{{ $item->label }}</span>
+                                    <span>{{ (int) $item->sold_qty }}</span>
+                                </div>
+                                <div class="h-2 overflow-hidden rounded bg-zinc-100 dark:bg-zinc-800">
+                                    <div class="h-full rounded bg-emerald-600" style="width: {{ $item->sold_qty * 100 / $categoryMax }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Catalog vs personal designs</h2>
+                    <div class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                        @foreach ($designTypeSales as $item)
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between gap-3 text-sm">
+                                    <span>{{ $item->label }}</span>
+                                    <span>{{ (int) $item->sold_qty }}</span>
+                                </div>
+                                <div class="h-2 overflow-hidden rounded bg-zinc-100 dark:bg-zinc-800">
+                                    <div class="h-full rounded bg-violet-600" style="width: {{ $item->sold_qty * 100 / $designTypeMax }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Cancellation reasons</h2>
+                    <div class="space-y-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900">
+                        @foreach ($cancellationReasons as $item)
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between gap-3 text-sm">
+                                    <span class="truncate" title="{{ $item['label'] }}">{{ $item['label'] }}</span>
+                                    <span>{{ $item['total'] }}</span>
+                                </div>
+                                <div class="h-2 overflow-hidden rounded bg-zinc-100 dark:bg-zinc-800">
+                                    <div class="h-full rounded bg-rose-500" style="width: {{ $item['total'] * 100 / $reasonMax }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            </div>
+        @endif
     </div>
 </x-layouts::main-content>

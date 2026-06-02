@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Customer;
 use App\Models\User;
 use Livewire\Livewire;
 
@@ -26,6 +27,36 @@ test('profile information can be updated', function () {
     expect($user->name)->toEqual('Test User');
     expect($user->email)->toEqual('test@example.com');
     expect($user->email_verified_at)->toBeNull();
+});
+
+test('customer defaults can be updated from profile', function () {
+    $user = User::factory()->create(['user_type' => 'C']);
+    Customer::create(['id' => $user->id]);
+
+    $this->actingAs($user);
+
+    $response = Livewire::test('pages::settings.profile')
+        ->set('name', 'Test Customer')
+        ->set('email', $user->email)
+        ->set('gender', 'F')
+        ->set('nif', '123456789')
+        ->set('address', 'Customer address')
+        ->set('default_payment_type', 'MB WAY')
+        ->set('default_payment_ref', '912345678')
+        ->call('updateProfileInformation');
+
+    $response->assertHasNoErrors();
+
+    $user->refresh();
+
+    expect($user->gender)->toEqual('F');
+    $this->assertDatabaseHas('customers', [
+        'id' => $user->id,
+        'nif' => '123456789',
+        'address' => 'Customer address',
+        'default_payment_type' => 'MB WAY',
+        'default_payment_ref' => '912345678',
+    ]);
 });
 
 test('email verification status is unchanged when email address is unchanged', function () {

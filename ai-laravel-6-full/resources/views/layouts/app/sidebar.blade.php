@@ -19,7 +19,7 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.group heading="Store" class="grid">
-                    <flux:sidebar.item icon="photo" :href="route('tshirt-images.index')" :current="request()->routeIs('home') || request()->routeIs('tshirt-images.*')" wire:navigate>
+                    <flux:sidebar.item icon="photo" :href="route('shop.index')" :current="request()->routeIs('home') || request()->routeIs('shop.*')" wire:navigate>
                         Catalog
                     </flux:sidebar.item>
 
@@ -38,8 +38,11 @@
 
                     @auth
                         @can('customer')
-                            <flux:sidebar.item icon="clipboard-document-list" :href="route('orders.index')" :current="request()->routeIs('orders.*') || request()->routeIs('checkout.*')" wire:navigate>
+                            <flux:sidebar.item icon="clipboard-document-list" :href="route('orders.index')" :current="request()->routeIs('orders.index', 'orders.show') || request()->routeIs('checkout.*')" wire:navigate>
                                 My orders
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="document-arrow-down" :href="route('orders.receipts')" :current="request()->routeIs('orders.receipts')" wire:navigate>
+                                My receipts
                             </flux:sidebar.item>
                             <flux:sidebar.item icon="cloud-arrow-up" :href="route('personal-tshirt-images.index')" :current="request()->routeIs('personal-tshirt-images.*')" wire:navigate>
                                 My images
@@ -55,14 +58,17 @@
                         <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                             Dashboard
                         </flux:sidebar.item>
-                        <flux:sidebar.item icon="clipboard-document-list" :href="route('orders.index')" :current="request()->routeIs('orders.*')" wire:navigate>
+                        <flux:sidebar.item icon="clipboard-document-list" :href="route('orders.index')" :current="request()->routeIs('orders.index', 'orders.show')" wire:navigate>
                             Orders
                         </flux:sidebar.item>
                         @can('admin')
+                            <flux:sidebar.item icon="document-arrow-down" :href="route('orders.receipts')" :current="request()->routeIs('orders.receipts')" wire:navigate>
+                                Receipts
+                            </flux:sidebar.item>
                             <flux:sidebar.item icon="tag" :href="route('categories.index')" :current="request()->routeIs('categories.*')" wire:navigate>
                                 Categories
                             </flux:sidebar.item>
-                            <flux:sidebar.item icon="photo" :href="route('catalog-images.index')" :current="request()->routeIs('catalog-images.*')" wire:navigate>
+                            <flux:sidebar.item icon="photo" :href="route('tshirt-images.index')" :current="request()->routeIs('tshirt-images.*')" wire:navigate>
                                 Catalog images
                             </flux:sidebar.item>
                             <flux:sidebar.item icon="swatch" :href="route('colors.index')" :current="request()->routeIs('colors.*')" wire:navigate>

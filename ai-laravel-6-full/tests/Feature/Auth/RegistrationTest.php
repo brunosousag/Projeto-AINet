@@ -16,6 +16,9 @@ test('new users can register', function () {
     $response = $this->post(route('register.store'), [
         'name' => 'John Doe',
         'email' => 'test@example.com',
+        'gender' => 'M',
+        'nif' => '123456789',
+        'address' => 'Test address',
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
@@ -24,4 +27,8 @@ test('new users can register', function () {
         ->assertRedirect(route('dashboard', absolute: false));
 
     $this->assertAuthenticated();
+    $this->assertDatabaseHas('customers', [
+        'nif' => '123456789',
+        'address' => 'Test address',
+    ]);
 });

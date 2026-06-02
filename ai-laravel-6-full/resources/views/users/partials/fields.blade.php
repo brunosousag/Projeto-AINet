@@ -1,7 +1,6 @@
 @php
     $mode = $mode ?? 'edit';
     $readonly = $mode === 'show';
-    $customer = $customer ?? $user->customer ?? new \App\Models\Customer();
 @endphp
 
 <div class="grid gap-8 lg:grid-cols-[1fr_18rem]">
@@ -48,32 +47,6 @@
             @endif
         </section>
 
-        <section class="space-y-4">
-            <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">Customer defaults</h2>
-            <div class="grid gap-4 md:grid-cols-2">
-                <flux:input name="nif"
-                            label="NIF"
-                            value="{{ old('nif', $customer->nif) }}"
-                            :disabled="$readonly" />
-
-                <flux:select name="default_payment_type" label="Default payment type" :disabled="$readonly">
-                    <option value="">No default</option>
-                    @foreach (['Visa', 'PayPal', 'MB WAY'] as $paymentType)
-                        <option value="{{ $paymentType }}" @selected(old('default_payment_type', $customer->default_payment_type) === $paymentType)>{{ $paymentType }}</option>
-                    @endforeach
-                </flux:select>
-
-                <flux:input name="default_payment_ref"
-                            label="Default payment reference"
-                            value="{{ old('default_payment_ref', $customer->default_payment_ref) }}"
-                            :disabled="$readonly" />
-            </div>
-
-            <flux:textarea name="address"
-                           label="Address"
-                           rows="4"
-                           :disabled="$readonly">{{ old('address', $customer->address) }}</flux:textarea>
-        </section>
     </div>
 
     <div>
@@ -81,7 +54,8 @@
                        label="Photo"
                        width="md"
                        :readonly="$readonly"
-                       :deleteAllow="false"
+                       :deleteAllow="$mode === 'edit' && (bool) $user->photo_url"
+                       deleteForm="delete-photo-form"
                        :imageUrl="$user->photo_full_url" />
 
         @if ($readonly)

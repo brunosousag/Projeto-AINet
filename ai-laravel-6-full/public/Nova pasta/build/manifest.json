@@ -1,0 +1,29 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-DOGMCx45.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "assets": [
+      "assets/politecnico_h-DulcW-o_.svg",
+      "assets/politecnico_h_white-DFUHkWD-.svg"
+    ]
+  },
+  "resources/img/politecnico_h.svg": {
+    "file": "assets/politecnico_h-DulcW-o_.svg",
+    "src": "resources/img/politecnico_h.svg"
+  },
+  "resources/img/politecnico_h_white.svg": {
+    "file": "assets/politecnico_h_white-DFUHkWD-.svg",
+    "src": "resources/img/politecnico_h_white.svg"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-34mOoJaZ.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  }
+}

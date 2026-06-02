@@ -1,90 +1,80 @@
-<x-layouts::main-content title="Catalog"
-                         heading="FunShirt Catalog"
-                         subheading="Catalog images available for printed t-shirts">
+<x-layouts::main-content title="Catalog Images"
+                         heading="Catalog images"
+                         subheading="Manage public t-shirt catalog images">
     <div class="space-y-6">
-        <form method="GET" action="{{ route('tshirt-images.index') }}"
-              class="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 md:grid-cols-[1fr_220px_auto_auto] dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:input name="search" label="Search" value="{{ $filters['search'] }}" />
+        <div class="flex flex-wrap items-end gap-3">
+            <form method="GET" action="{{ route('tshirt-images.index') }}" class="flex flex-wrap items-end gap-3">
+                <flux:input name="search" label="Search" value="{{ $filters['search'] }}" />
 
-            <flux:select name="category_id" label="Category">
-                <option value="">All categories</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}" @selected((string) $filters['category_id'] === (string) $category->id)>
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-            </flux:select>
+                <flux:select name="category_id" label="Category">
+                    <option value="">All categories</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" @selected((string) $filters['category_id'] === (string) $category->id)>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </flux:select>
 
-            <div class="flex items-end">
                 <flux:button type="submit" icon="magnifying-glass" variant="primary">Filter</flux:button>
-            </div>
-            <div class="flex items-end">
                 <flux:button :href="route('tshirt-images.index')" icon="x-mark" variant="ghost">Reset</flux:button>
-            </div>
-        </form>
+            </form>
+
+            <div class="grow"></div>
+            <flux:button variant="primary" icon="plus" href="{{ route('tshirt-images.create') }}">New image</flux:button>
+        </div>
 
         @if ($tshirtImages->isEmpty())
             <div class="rounded-lg border border-zinc-200 bg-white p-6 text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
                 No catalog images found.
             </div>
         @else
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                @foreach ($tshirtImages as $tshirtImage)
-                    <article class="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
-                        <a href="{{ route('tshirt-images.show', ['tshirtImage' => $tshirtImage]) }}" class="block bg-zinc-100 dark:bg-zinc-800">
-                            <img src="{{ $tshirtImage->image_full_url }}"
-                                 alt="{{ $tshirtImage->name }}"
-                                 class="aspect-square w-full object-contain p-6">
-                        </a>
-
-                        <div class="space-y-4 p-4">
-                            <div>
-                                <div class="flex items-start justify-between gap-3">
-                                    <h2 class="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-                                        <a href="{{ route('tshirt-images.show', ['tshirtImage' => $tshirtImage]) }}">
-                                            {{ $tshirtImage->name }}
-                                        </a>
-                                    </h2>
-                                    @if ($tshirtImage->category)
-                                        <span class="rounded bg-zinc-100 px-2 py-1 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
-                                            {{ $tshirtImage->category->name }}
-                                        </span>
-                                    @endif
-                                </div>
-                                @if ($tshirtImage->description)
-                                    <p class="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
-                                        {{ $tshirtImage->description }}
-                                    </p>
-                                @endif
-                            </div>
-
-                            <form method="POST" action="{{ route('cart.add') }}" class="grid gap-3">
-                                @csrf
-                                <input type="hidden" name="tshirt_image_id" value="{{ $tshirtImage->id }}">
-
-                                <div class="grid grid-cols-3 gap-2">
-                                    <flux:select name="color_code" label="Color">
-                                        @foreach ($colors as $color)
-                                            <option value="{{ $color->code }}">{{ $color->name }}</option>
-                                        @endforeach
-                                    </flux:select>
-
-                                    <flux:select name="size" label="Size">
-                                        @foreach ($sizes as $size)
-                                            <option value="{{ $size }}">{{ $size }}</option>
-                                        @endforeach
-                                    </flux:select>
-
-                                    <flux:input type="number" name="qty" label="Qty" min="1" max="999" value="1" />
-                                </div>
-
-                                <flux:button type="submit" icon="shopping-cart" variant="primary" class="w-full">
-                                    Add
-                                </flux:button>
-                            </form>
-                        </div>
-                    </article>
-                @endforeach
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[760px] table-auto border-collapse">
+                    <thead>
+                        <tr class="border-b-2 border-b-gray-400 bg-gray-100 dark:border-b-gray-500 dark:bg-gray-800">
+                            <th class="px-2 py-2 text-left">Image</th>
+                            <th class="px-2 py-2 text-left">Name</th>
+                            <th class="px-2 py-2 text-left">Category</th>
+                            <th class="px-2 py-2 text-right">Order items</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($tshirtImages as $tshirtImage)
+                            <tr class="border-b border-b-gray-400 dark:border-b-gray-500">
+                                <td class="px-2 py-2">
+                                    <img src="{{ $tshirtImage->image_full_url }}"
+                                         alt="{{ $tshirtImage->name }}"
+                                         class="h-14 w-14 rounded bg-zinc-100 object-contain p-1 dark:bg-zinc-800">
+                                </td>
+                                <td class="px-2 py-2 text-left">{{ $tshirtImage->name }}</td>
+                                <td class="px-2 py-2 text-left">{{ $tshirtImage->category?->name ?? '-' }}</td>
+                                <td class="px-2 py-2 text-right">{{ $tshirtImage->order_items_count }}</td>
+                                <td class="ps-2 px-0.5">
+                                    <a href="{{ route('tshirt-images.show', ['tshirtImage' => $tshirtImage]) }}">
+                                        <flux:icon.eye class="size-5 hover:text-green-600" />
+                                    </a>
+                                </td>
+                                <td class="px-0.5">
+                                    <a href="{{ route('tshirt-images.edit', ['tshirtImage' => $tshirtImage]) }}">
+                                        <flux:icon.pencil-square class="size-5 hover:text-blue-600" />
+                                    </a>
+                                </td>
+                                <td class="px-0.5">
+                                    <form method="POST" action="{{ route('tshirt-images.destroy', ['tshirtImage' => $tshirtImage]) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit">
+                                            <flux:icon.trash class="size-5 hover:text-red-600" />
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
 
             <div>
