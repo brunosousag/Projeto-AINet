@@ -28,8 +28,8 @@
     --color-accent-foreground: var(--color-white);
 
     /* Code added to define background images for the logo */
-    --background-image-logo-light: url('../img/politecnico_h.svg');
-    --background-image-logo-dark: url('../img/politecnico_h_white.svg');
+    --background-image-logo-light: url('../img/logo.svg');
+    --background-image-logo-dark: url('../img/logo_branco.svg');
 }
 
 @layer theme {
