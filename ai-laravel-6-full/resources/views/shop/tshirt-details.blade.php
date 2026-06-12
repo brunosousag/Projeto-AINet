@@ -10,11 +10,11 @@
     @endphp
 
     <div x-data="{
-            selectedColor: '{{ $colors->first()?->code ?? 'fafafa' }}',
-            previewTop: {{ $previewTop }},
-            previewWidth: {{ $previewWidth }},
-            previewHeight: {{ $previewHeight }},
-            previewOpacity: {{ $previewOpacity }}
+            selectedColor: @js($colors->first()?->code ?? 'fafafa'),
+            previewTop: @js($previewTop),
+            previewWidth: @js($previewWidth),
+            previewHeight: @js($previewHeight),
+            previewOpacity: @js($previewOpacity)
          }"
          class="grid gap-6 lg:grid-cols-[minmax(280px,460px)_1fr]">
         <div class="rounded-lg border border-zinc-200 bg-zinc-100 p-6 dark:border-zinc-700 dark:bg-zinc-800">

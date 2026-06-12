@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,13 +13,13 @@ class PricesSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->command->info('Configuracação de preços');
+        $this->command->info("Configuracação de preços");
         DB::table('prices')->insert([
-            'unit_price_catalog' => 10,
-            'unit_price_own' => 15,
-            'unit_price_catalog_discount' => 8.5,
-            'unit_price_own_discount' => 12,
-            'qty_discount' => 5,
+            "unit_price_catalog" => 10,
+            "unit_price_own" => 15,
+            "unit_price_catalog_discount" => 8.5,
+            "unit_price_own_discount" => 12,
+            "qty_discount" => 5,
         ]);
     }
 }

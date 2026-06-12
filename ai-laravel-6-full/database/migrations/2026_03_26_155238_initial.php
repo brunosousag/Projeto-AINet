@@ -12,24 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Cliente, Funcionario ou Administrador
-            $table->enum('user_type', ['C', 'F', 'A']);
+                // Cliente, Funcionario ou Administrador
+                $table->enum('user_type', ['C', 'F', 'A']);
 
-            // Acesso do utilizador blocked
-            $table->enum('gender', ['M', 'F']);
+                // Acesso do utilizador blocked
+                $table->enum('gender', ['M', 'F']);
 
-            // Acesso do utilizador blocked
-            $table->boolean('blocked')->default(false);
+                // Acesso do utilizador blocked
+                $table->boolean('blocked')->default(false);
 
-            // Fotografia/Avatar do utilizador
-            $table->string('photo_url')->nullable();
+                // Fotografia/Avatar do utilizador
+                $table->string('photo_url')->nullable();
 
-            // custom data
-            $table->json('custom')->nullable();
+                // custom data
+                $table->json('custom')->nullable();
 
-            // Utilizadores podem ser apagados com "soft deletes"
-            $table->softDeletes();
-        }
+                // Utilizadores podem ser apagados com "soft deletes"
+                $table->softDeletes();
+            }
         );
 
         Schema::create('customers', function (Blueprint $table) {
@@ -50,6 +50,7 @@ return new class extends Migration
             // PayPal -> email
             // MB WAY -> Nº telemóvel com 9 digitos
             $table->string('default_payment_ref')->nullable();
+
 
             // custom data
             $table->json('custom')->nullable();

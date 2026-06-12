@@ -6,6 +6,12 @@
     'settings' => [],
     'dynamicPlacement' => false,
     'dynamicImage' => false,
+    'colorProperty' => 'selectedColor',
+    'imageProperty' => 'previewImage',
+    'topProperty' => 'previewTop',
+    'widthProperty' => 'previewWidth',
+    'heightProperty' => 'previewHeight',
+    'opacityProperty' => 'previewOpacity',
 ])
 
 @php
@@ -20,25 +26,27 @@
 <div {{ $attributes->class('relative aspect-[13/14] overflow-hidden bg-white') }}>
     <img src="{{ "{$baseUrl}/{$colorCode}.jpg" }}"
          @if ($dynamic)
-             x-bind:src="'{{ $baseUrl }}/' + selectedColor + '.jpg'"
+             x-bind:src="@js($baseUrl) + '/' + {{ $colorProperty }} + '.jpg'"
          @endif
          onerror="this.onerror=null; this.src='{{ $fallbackBaseUrl }}';"
          alt=""
          class="h-full w-full object-contain"
          loading="lazy">
 
-    <div data-print-area class="absolute inset-x-[23%] top-[18%] bottom-[10%] overflow-hidden">
+    <div data-print-area
+         class="absolute overflow-hidden"
+         style="left: 23%; right: 23%; top: 18%; bottom: 10%;">
         <img src="{{ $imageUrl ?: asset('storage/tshirt_images/placeholder.png') }}"
              alt="{{ $alt }}"
-             style="top: {{ $previewTop }}%; width: {{ $previewWidth }}%; height: {{ $previewHeight }}%; opacity: {{ $previewOpacity / 100 }}"
+             style="left: 50%; transform: translateX(-50%); top: {{ $previewTop }}%; width: {{ $previewWidth }}%; height: {{ $previewHeight }}%; opacity: {{ $previewOpacity / 100 }}"
              @if ($dynamicImage)
-                 x-bind:src="previewImage"
-                 x-show="previewImage"
+                 x-bind:src="{{ $imageProperty }}"
+                 x-show="{{ $imageProperty }}"
              @endif
              @if ($dynamicPlacement)
-                 x-bind:style="'top: ' + previewTop + '%; width: ' + previewWidth + '%; height: ' + previewHeight + '%; opacity: ' + (previewOpacity / 100)"
+                 x-bind:style="'left: 50%; transform: translateX(-50%); top: ' + {{ $topProperty }} + '%; width: ' + {{ $widthProperty }} + '%; height: ' + {{ $heightProperty }} + '%; opacity: ' + ({{ $opacityProperty }} / 100)"
              @endif
-             class="absolute left-1/2 -translate-x-1/2 object-contain"
+             class="absolute object-contain"
              loading="lazy">
     </div>
 </div>

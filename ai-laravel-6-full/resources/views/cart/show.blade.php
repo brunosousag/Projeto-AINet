@@ -9,7 +9,7 @@
         @else
             <div class="space-y-3">
                 @foreach ($cart['lines'] as $item)
-                    <div x-data="{ selectedColor: '{{ $item['color']->code }}' }"
+                    <div x-data="{ selectedColor: @js($item['color']->code) }"
                          class="grid gap-4 rounded-lg border border-zinc-200 bg-white p-4 md:grid-cols-[112px_1fr_auto] dark:border-zinc-700 dark:bg-zinc-900">
                         <x-tshirt-preview :image-url="$item['tshirt_image']->image_full_url"
                                           :alt="$item['tshirt_image']->name"

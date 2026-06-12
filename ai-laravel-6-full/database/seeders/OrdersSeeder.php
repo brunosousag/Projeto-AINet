@@ -2,41 +2,33 @@
 
 namespace Database\Seeders;
 
-use Carbon\Carbon;
-use Faker\Factory;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class OrdersSeeder extends Seeder
 {
     use SeederUtils;
 
     private $numberOfDays = 1000;
-
     private $avgOrdersDay = [10, 5, 7, 9, 12, 6, 20]; // Domingo, Segunda, terça, ...
-
     private $qtys = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 6, 7, 8, 9, 10];
-
     private $num_tshirts = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6,  6,  6, 7, 7, 7, 8, 8, 9, 9, 10, 10, 11];
-
     private $status = ['closed', 'closed', 'closed', 'closed', 'closed', 'closed', 'closed', 'closed', 'closed', 'closed', 'closed', 'canceled'];
-
     private $sizes = ['XS', 'S', 'S', 'M', 'M', 'M', 'M', 'M', 'L', 'L', 'XL'];
-
     private $customers = [];
-
     private $customersComTshirtImagesProprias = [];
-
     private $tshirtImages_catalog = [];
-
     private $colors = [];
 
     public function run()
     {
-        $faker = DatabaseSeeder::$seedLanguage == 'pt_PT' ? Factory::create('pt_PT') : Factory::create();
+        $faker = DatabaseSeeder::$seedLanguage == 'pt_PT' ? \Faker\Factory::create('pt_PT') : \Faker\Factory::create();
 
-        $this->command->info('Orders');
+        $this->command->info("Orders");
 
         $this->cleanStorageFolder('pdf_receipts', false);
 
@@ -49,18 +41,18 @@ class OrdersSeeder extends Seeder
         $precoDelta = 3;
         while ($d->lessThanOrEqualTo($today)) {
             $d->setTime(8, 0);
-            if ($i % 10 == 0) { // / 10 em 10 dias escreve no log e faz o shuffle dos customers
-                $this->command->info('Orders para o dia '.$d->format('d-m-Y'));
+            if ($i % 10 == 0) { /// 10 em 10 dias escreve no log e faz o shuffle dos customers
+                $this->command->info("Orders para o dia " . $d->format('d-m-Y'));
                 $this->shuffleCustomers();
             }
-            if ($i % 100 == 0) { // / 100 em 100 dias negócio cresce (ou diminui)
+            if ($i % 100 == 0) { /// 100 em 100 dias negócio cresce (ou diminui)
                 for ($j = 0; $j < count($this->avgOrdersDay); $j++) {
                     $fatorCrescimento = rand(-3, 5);
                     $this->avgOrdersDay[$j] += $this->avgOrdersDay[$j] * $fatorCrescimento / 100;
                 }
             }
 
-            if ($i % 300 == 0) { // / 300 em 300 dias preço cresce
+            if ($i % 300 == 0) { /// 300 em 300 dias preço cresce
                 $precoDelta--;
             }
 
@@ -85,16 +77,17 @@ class OrdersSeeder extends Seeder
             $i++;
             $d->addDays(1);
         }
-        $this->command->info('Atualizar os preços totais das orders');
-        // DB::update('update orders set total_price = IFNULL((select sum(order_items.sub_total) from order_items where order_items.order_id = orders.id), 0)');
+        $this->command->info("Atualizar os preços totais das orders");
+        //DB::update('update orders set total_price = IFNULL((select sum(order_items.sub_total) from order_items where order_items.order_id = orders.id), 0)');
         DB::update('update orders set total_price = (select COALESCE(sum(order_items.sub_total), 0) from order_items where order_items.order_id = orders.id)');
 
-        $this->command->info('Copiar os pdfs de recibos para a o storage');
+        $this->command->info("Copiar os pdfs de recibos para a o storage");
         $this->copyReceiptPdfsToStorage();
 
-        $this->command->info('Atualizar os urls dos recibos das orders');
+        $this->command->info("Atualizar os urls dos recibos das orders");
         DB::update("update orders set receipt_url = CONCAT('receipt_', id, '.pdf')");
-        $this->command->info('---- END ----');
+        $this->command->info("---- END ----");
+
 
         // // Para verificar possiveis erros de tshirtImages próprios usadas nas orders de outros,
         // // Usar o seguinte SQL - se devolver alguma linha, é porque algo está mal:
@@ -148,9 +141,9 @@ class OrdersSeeder extends Seeder
     {
         // 86400 segundos num dia
         // 43200 segundos entre as 8h e as 20h (12h)
-        $maxIntervalSeconds = 43200 / ($totalOrdersDay - 1 ?: 1);
+        $maxIntervalSeconds = 43200 / ($totalOrdersDay -1 ?: 1);
         $customer = $faker->randomElement($this->customers);
-        $dateTS->addSeconds(rand($maxIntervalSeconds / 1.4, $maxIntervalSeconds));
+        $dateTS->addSeconds(rand($maxIntervalSeconds/1.4, $maxIntervalSeconds));
         $inicio = $dateTS->copy();
         $fim = $inicio->copy()->addSeconds(rand(60, 300000));
         $status = $faker->randomElement($this->status);
@@ -158,7 +151,6 @@ class OrdersSeeder extends Seeder
         if ($status == 'canceled') {
             $reason = rand(0, 40) > 3 ? $faker->realText(100) : null;
         }
-
         return [
             'status' => $status,
             'customer_id' => $customer->id,
@@ -204,10 +196,9 @@ class OrdersSeeder extends Seeder
                 'size' => $size,
                 'qty' => $qty,
                 'unit_price' => $unit_price,
-                'sub_total' => $subTotal,
+                'sub_total' => $subTotal
             ];
         }
-
         return $allItems;
     }
 }

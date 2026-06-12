@@ -28,11 +28,11 @@
                         $previewOpacity = $settings['preview_opacity'] ?? 100;
                     @endphp
                     <article x-data="{
-                                selectedColor: '{{ $colors->first()?->code ?? 'fafafa' }}',
-                                previewTop: {{ $previewTop }},
-                                previewWidth: {{ $previewWidth }},
-                                previewHeight: {{ $previewHeight }},
-                                previewOpacity: {{ $previewOpacity }}
+                                selectedColor: @js($colors->first()?->code ?? 'fafafa'),
+                                previewTop: @js($previewTop),
+                                previewWidth: @js($previewWidth),
+                                previewHeight: @js($previewHeight),
+                                previewOpacity: @js($previewOpacity)
                              }"
                              class="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
                         <div class="bg-zinc-100 p-5 dark:bg-zinc-800">
