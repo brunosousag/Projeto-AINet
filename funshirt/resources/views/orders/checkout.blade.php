@@ -2,7 +2,14 @@
                          heading="Checkout"
                          subheading="Confirm delivery and payment data">
     <div class="grid gap-6 xl:grid-cols-[1fr_360px]">
-        <form method="POST" action="{{ route('checkout.store') }}" class="space-y-4">
+        <form method="POST" action="{{ route('checkout.store') }}" class="space-y-4"
+              x-data="{
+                  defaultType: @js($customer?->default_payment_type),
+                  defaultRef: @js(in_array($customer?->default_payment_type, $paymentTypes, true) ? $customer?->default_payment_ref : null),
+                  selectedType: @js(old('payment_type', in_array($customer?->default_payment_type, $paymentTypes, true) ? $customer?->default_payment_type : ($paymentTypes[0] ?? ''))),
+                  ref: @js(old('payment_ref', in_array($customer?->default_payment_type, $paymentTypes, true) ? $customer?->default_payment_ref : null)),
+                  syncRef() { this.ref = this.selectedType === this.defaultType ? (this.defaultRef ?? '') : ''; }
+              }">
             @csrf
 
             <div class="grid gap-4 md:grid-cols-2">
@@ -11,7 +18,7 @@
                             value="{{ old('nif', $customer?->nif) }}"
                             maxlength="9" />
 
-                <flux:select name="payment_type" label="Payment type">
+                <flux:select name="payment_type" label="Payment type" x-model="selectedType" x-on:change="syncRef()">
                     @foreach ($paymentTypes as $paymentType)
                         <option value="{{ $paymentType }}" @selected(old('payment_type', $customer?->default_payment_type) === $paymentType)>
                             {{ $paymentType }}
@@ -22,7 +29,7 @@
 
             <flux:input name="payment_ref"
                         label="Payment reference"
-                        value="{{ old('payment_ref', $customer?->default_payment_ref) }}" />
+                        x-model="ref" />
 
             <flux:textarea name="address" label="Address" rows="4">{{ old('address', $customer?->address) }}</flux:textarea>
 
