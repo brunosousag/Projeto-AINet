@@ -7,12 +7,15 @@ use App\Models\TshirtImage;
 use App\Services\CartService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class CartController extends Controller
 {
     public function show(CartService $cartService): View
     {
+        Gate::authorize('use-cart');
+
         return view('cart.show', [
             'cart' => $cartService->summary(),
             'colors' => Color::orderBy('name')->get(),
@@ -21,6 +24,8 @@ class CartController extends Controller
 
     public function add(Request $request, CartService $cartService): RedirectResponse
     {
+        Gate::authorize('use-cart');
+
         $validated = $request->validate([
             'tshirt_image_id' => ['required', 'integer', 'exists:tshirt_images,id'],
             'color_code' => ['required', 'string', 'exists:colors,code'],
@@ -53,6 +58,8 @@ class CartController extends Controller
 
     public function update(Request $request, CartService $cartService, string $line): RedirectResponse
     {
+        Gate::authorize('use-cart');
+
         $validated = $request->validate([
             'color_code' => ['required', 'string', 'exists:colors,code'],
             'qty' => ['required', 'integer', 'min:0', 'max:999'],
@@ -72,6 +79,8 @@ class CartController extends Controller
 
     public function remove(CartService $cartService, string $line): RedirectResponse
     {
+        Gate::authorize('use-cart');
+
         $cartService->remove($line);
 
         return back()
@@ -81,6 +90,8 @@ class CartController extends Controller
 
     public function destroy(CartService $cartService): RedirectResponse
     {
+        Gate::authorize('use-cart');
+
         $cartService->clear();
 
         return back()

@@ -45,18 +45,24 @@ Contas faceis para testar:
 - Catalogo publico de estampas: primeiro escolhe-se a imagem e depois a t-shirt.
 - Escolha visual da cor atraves de amostras clicaveis na pagina da t-shirt.
 - Pre-visualizacao da estampa recortada dentro da area imprimivel da t-shirt.
-- Ajuste da posicao, dimensao e opacidade da estampa durante a compra.
+- Ajuste da posicao, dimensao e opacidade da estampa antes de adicionar ao
+  carrinho, tanto no catalogo como nas imagens pessoais.
 - Carrinho com tamanho e composicao preservados; apenas cor e quantidade podem
   ser atualizadas depois de adicionar.
-- Carrinho e checkout para clientes.
+- Carrinho disponivel para visitantes e clientes; funcionarios e administradores
+  nao podem comprar nem usar as rotas do carrinho.
+- Checkout exclusivo para clientes.
 - Validacao do pagamento atraves da API externa simulada do enunciado.
+- Dados de pagamento por defeito no perfil validados com as mesmas regras do
+  checkout: Visa, PayPal e MB WAY.
 - Area completa de imagens pessoais dos clientes, incluindo ajuste da estampa.
 - Gestao de encomendas por administradores e funcionarios.
 - Cancelamento de encomendas pendentes.
 - Emails automaticos quando a encomenda fica pendente, cancelada ou fechada.
 - Fecho de encomendas, geracao de recibo em PDF e envio automatico por email.
 - Gestao de categorias, imagens de catalogo, cores e precos por administradores.
-- Upload da t-shirt base associada a cada cor.
+- Upload da t-shirt base associada a cada cor; se nao for enviado ficheiro, a
+  t-shirt base e gerada automaticamente a partir da t-shirt branca.
 - Pre-visualizacao e posicionamento de estampas de catalogo por administradores.
 - Gestao de clientes e colaboradores, com privacidade dos dados de cliente.
 - Criacao, edicao e remocao de colaboradores por administradores.
@@ -134,6 +140,10 @@ Management > Receipts
 Funcionarios nao podem abrir recibos. Esta restricao e intencional e faz parte
 do enunciado.
 
+Quando um funcionario fecha uma encomenda, e redirecionado para a listagem de
+encomendas pendentes, porque a encomenda fechada deixa de estar acessivel a
+funcionarios.
+
 A rota tecnica para abrir um recibo e:
 
 ```text
@@ -152,6 +162,9 @@ Pode ser substituido atraves de `PAYMENTS_API_URL`. Para testar emails no
 Mailtrap, configurar `MAIL_MAILER=smtp`, `MAIL_HOST`, `MAIL_PORT`,
 `MAIL_USERNAME` e `MAIL_PASSWORD` no ficheiro `.env`. `MAIL_TIMEOUT` limita a
 espera quando o servidor SMTP nao responde.
+
+Para uma apresentacao sem envio real de emails, pode usar-se `MAIL_MAILER=log`.
+Depois de alterar `.env`, executar `php artisan optimize:clear`.
 
 ## Validacao
 

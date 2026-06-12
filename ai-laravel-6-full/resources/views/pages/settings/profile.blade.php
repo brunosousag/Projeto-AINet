@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -56,6 +57,7 @@ new #[Title('Profile settings')] class extends Component {
             'default_payment_type' => ['nullable', Rule::in(['Visa', 'PayPal', 'MB WAY'])],
             'default_payment_ref' => ['nullable', 'string', 'max:255', 'required_with:default_payment_type'],
         ]);
+        $this->validateDefaultPaymentReference($validated);
 
         $user->fill([
             'name' => $validated['name'],
@@ -88,6 +90,33 @@ new #[Title('Profile settings')] class extends Component {
         $this->reset('photo_file');
 
         Flux::toast(variant: 'success', text: __('Profile updated.'));
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    private function validateDefaultPaymentReference(array $validated): void
+    {
+        $paymentType = (string) ($validated['default_payment_type'] ?? '');
+        $paymentRef = (string) ($validated['default_payment_ref'] ?? '');
+
+        if ($paymentType === '' && $paymentRef === '') {
+            return;
+        }
+
+        $message = match (true) {
+            $paymentType === '' => 'Choose a default payment type before entering a reference.',
+            $paymentType === 'Visa' && ! preg_match('/^4\d{15}$/', $paymentRef) => 'Visa reference must have exactly 16 digits and start with 4.',
+            $paymentType === 'MB WAY' && ! preg_match('/^9\d{8}$/', $paymentRef) => 'MB WAY reference must be a valid Portuguese phone number.',
+            $paymentType === 'PayPal' && ! filter_var($paymentRef, FILTER_VALIDATE_EMAIL) => 'PayPal reference must be a valid email address.',
+            default => null,
+        };
+
+        if ($message !== null) {
+            throw ValidationException::withMessages([
+                'default_payment_ref' => $message,
+            ]);
+        }
     }
 
     public function deletePhoto(): void

@@ -59,6 +59,22 @@ test('customer defaults can be updated from profile', function () {
     ]);
 });
 
+test('customer default payment reference is validated like checkout', function () {
+    $user = User::factory()->create(['user_type' => 'C']);
+    Customer::create(['id' => $user->id]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::settings.profile')
+        ->set('name', 'Test Customer')
+        ->set('email', $user->email)
+        ->set('gender', 'F')
+        ->set('default_payment_type', 'Visa')
+        ->set('default_payment_ref', '5111111111111111')
+        ->call('updateProfileInformation')
+        ->assertHasErrors(['default_payment_ref']);
+});
+
 test('email verification status is unchanged when email address is unchanged', function () {
     $user = User::factory()->create();
 

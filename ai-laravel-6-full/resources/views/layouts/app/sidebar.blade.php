@@ -6,6 +6,7 @@
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         @php
             $cartCount = collect(session('cart', []))->sum('qty');
+            $canUseCart = auth()->guest() || auth()->user()->can('use-cart');
             $settingsRoute = auth()->check()
                 ? (auth()->user()->can('edit-profile') ? route('profile.edit') : route('security.edit'))
                 : route('login');
@@ -23,18 +24,20 @@
                         Catalog
                     </flux:sidebar.item>
 
-                    <div class="relative">
-                        @if ($cartCount > 0)
-                            <div class="absolute left-6 top-0 z-10">
-                                <p class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs text-white">
-                                    {{ $cartCount }}
-                                </p>
-                            </div>
-                        @endif
-                        <flux:sidebar.item icon="shopping-cart" :href="route('cart.show')" :current="request()->routeIs('cart.*')" wire:navigate>
-                            Cart
-                        </flux:sidebar.item>
-                    </div>
+                    @if ($canUseCart)
+                        <div class="relative">
+                            @if ($cartCount > 0)
+                                <div class="absolute left-6 top-0 z-10">
+                                    <p class="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs text-white">
+                                        {{ $cartCount }}
+                                    </p>
+                                </div>
+                            @endif
+                            <flux:sidebar.item icon="shopping-cart" :href="route('cart.show')" :current="request()->routeIs('cart.*')" wire:navigate>
+                                Cart
+                            </flux:sidebar.item>
+                        </div>
+                    @endif
 
                     @auth
                         @can('customer')

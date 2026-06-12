@@ -169,6 +169,30 @@ test('cart updates preserve the selected size and design resize settings', funct
         ->assertDontSee('name="size"', false);
 });
 
+test('only guests and customers can use the cart', function () {
+    [$color, $image] = createProjectCatalogLine();
+    $payload = [
+        'tshirt_image_id' => $image->id,
+        'color_code' => $color->code,
+        'size' => 'M',
+        'qty' => 1,
+    ];
+
+    $this->get(route('cart.show'))->assertOk();
+    $this->post(route('cart.add'), $payload)->assertRedirect();
+
+    $admin = User::factory()->create(['user_type' => 'A']);
+    $this->actingAs($admin)
+        ->get(route('cart.show'))
+        ->assertForbidden();
+    $this->post(route('cart.add'), $payload)->assertForbidden();
+
+    $employee = User::factory()->create(['user_type' => 'F']);
+    $this->actingAs($employee)
+        ->post(route('cart.add'), $payload)
+        ->assertForbidden();
+});
+
 test('visa cards must start with four', function () {
     Http::fake();
 
@@ -344,7 +368,11 @@ test('customers can list personal images and add them to the cart', function () 
         ->assertSee('name="size"', false)
         ->assertSeeText('XS')
         ->assertSeeText('XL')
-        ->assertSee('name="qty"', false);
+        ->assertSee('name="qty"', false)
+        ->assertSee('name="preview_top"', false)
+        ->assertSee('name="preview_width"', false)
+        ->assertSee('name="preview_height"', false)
+        ->assertSee('name="preview_opacity"', false);
 });
 
 test('creating a color stores its t-shirt base image', function () {
