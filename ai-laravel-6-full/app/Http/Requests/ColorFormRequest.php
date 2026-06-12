@@ -21,7 +21,7 @@ class ColorFormRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:255',
             'base_image_file' => [
-                $this->isMethod('post') ? 'required' : 'nullable',
+                'nullable',
                 'image',
                 'mimes:jpg,jpeg',
                 'max:4096',

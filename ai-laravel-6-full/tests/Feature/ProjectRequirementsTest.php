@@ -265,6 +265,30 @@ test('employees only see pending orders and cannot cancel them', function () {
         ->assertForbidden();
 });
 
+test('employees are redirected to the orders list after closing an order', function () {
+    Mail::fake();
+
+    $employee = User::factory()->create(['user_type' => 'F']);
+    $customer = createProjectCustomer();
+
+    $order = Order::create([
+        'status' => 'pending',
+        'customer_id' => $customer->id,
+        'date' => now()->toDateString(),
+        'total_price' => 10,
+        'nif' => '123456789',
+        'address' => 'Customer address',
+        'payment_type' => 'MB WAY',
+        'payment_ref' => '912345678',
+    ]);
+
+    $this->actingAs($employee)
+        ->patch(route('orders.close', ['order' => $order]))
+        ->assertRedirect(route('orders.index'));
+
+    expect($order->refresh()->status)->toBe('closed');
+});
+
 test('customers can update their personal image preview settings', function () {
     Storage::fake('local');
     $customer = createProjectCustomer();
@@ -336,6 +360,34 @@ test('creating a color stores its t-shirt base image', function () {
         ->assertRedirect(route('colors.index'));
 
     Storage::disk('public')->assertExists('tshirt_base/abcdef.jpg');
+});
+
+test('administrators can create colors without a t-shirt base image', function () {
+    Storage::fake('public');
+    $admin = User::factory()->create(['user_type' => 'A']);
+
+    Storage::disk('public')->makeDirectory('tshirt_base');
+    $template = imagecreatetruecolor(2, 2);
+    $white = imagecolorallocate($template, 255, 255, 255);
+    $yellow = imagecolorallocate($template, 243, 244, 107);
+    imagefill($template, 0, 0, $white);
+    imagesetpixel($template, 0, 0, $yellow);
+    imagejpeg($template, Storage::disk('public')->path('tshirt_base/fafafa.jpg'));
+    imagedestroy($template);
+
+    $this->actingAs($admin)
+        ->post(route('colors.store'), [
+            'code' => '123abc',
+            'name' => 'Fallback color',
+        ])
+        ->assertRedirect(route('colors.index'));
+
+    $this->assertDatabaseHas('colors', [
+        'code' => '123abc',
+        'name' => 'Fallback color',
+    ]);
+
+    Storage::disk('public')->assertExists('tshirt_base/123abc.jpg');
 });
 
 test('catalog filters categories without rendering the visual category browser', function () {

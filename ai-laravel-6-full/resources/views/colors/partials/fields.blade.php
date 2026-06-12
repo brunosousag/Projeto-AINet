@@ -36,15 +36,15 @@
                 :disabled="$readonly" />
 
     @if ($readonly)
-        <img src="{{ asset("storage/tshirt_base/{$color->code}.jpg") }}"
+        <img src="{{ $color->base_image_url }}"
              alt="{{ $color->name }}"
              class="w-48 rounded border border-zinc-200 bg-white dark:border-zinc-700">
     @else
         <x-field.image name="base_image_file"
-                       label="{{ $mode === 'create' ? 'T-shirt base image (JPEG)' : 'Replace t-shirt base image (JPEG)' }}"
+                       label="{{ $mode === 'create' ? 'T-shirt base image (JPEG, optional)' : 'Replace t-shirt base image (JPEG, optional)' }}"
                        width="md"
                        accept="image/jpeg"
                        :deleteAllow="false"
-                       :imageUrl="$color->exists ? asset('storage/tshirt_base/'.$color->code.'.jpg') : asset('storage/tshirt_images/placeholder.png')" />
+                       :imageUrl="$color->exists ? $color->base_image_url : asset('storage/tshirt_base/fafafa.jpg')" />
     @endif
 </div>

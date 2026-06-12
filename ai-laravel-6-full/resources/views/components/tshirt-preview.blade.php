@@ -10,6 +10,7 @@
 
 @php
     $baseUrl = asset('storage/tshirt_base');
+    $fallbackBaseUrl = asset('storage/tshirt_base/fafafa.jpg');
     $previewTop = $settings['preview_top'] ?? 25;
     $previewWidth = $settings['preview_width'] ?? 48;
     $previewHeight = $settings['preview_height'] ?? 50;
@@ -21,6 +22,7 @@
          @if ($dynamic)
              x-bind:src="'{{ $baseUrl }}/' + selectedColor + '.jpg'"
          @endif
+         onerror="this.onerror=null; this.src='{{ $fallbackBaseUrl }}';"
          alt=""
          class="h-full w-full object-contain"
          loading="lazy">

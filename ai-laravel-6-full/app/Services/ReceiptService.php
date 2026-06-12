@@ -189,7 +189,13 @@ class ReceiptService
         $code = preg_replace('/[^a-f0-9]/i', '', $item->color_code);
         $path = Storage::disk('public')->path("tshirt_base/{$code}.jpg");
 
-        return is_file($path) ? $path : null;
+        if (is_file($path)) {
+            return $path;
+        }
+
+        $fallback = Storage::disk('public')->path('tshirt_base/fafafa.jpg');
+
+        return is_file($fallback) ? $fallback : null;
     }
 
     private function designImagePath(OrderItem $item): ?string

@@ -258,7 +258,11 @@ class OrderController extends Controller
         });
         $this->sendMailSafely($order, new OrderClosedMail($order->refresh()));
 
-        return back()
+        $redirect = $request->user()->isEmployee()
+            ? redirect()->route('orders.index')
+            : back();
+
+        return $redirect
             ->with('alert-type', 'success')
             ->with('alert-msg', "Encomenda #{$order->id} fechada.");
     }
